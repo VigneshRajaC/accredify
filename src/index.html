@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accredify — College Compliance Dashboard</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #f5f5f3; color: #1a1a1a; font-size: 14px; }
+.app { display: flex; height: 100vh; overflow: hidden; }
+.sidebar { width: 230px; min-width: 230px; background: #fff; border-right: 0.5px solid rgba(0,0,0,0.1); display: flex; flex-direction: column; }
+.sidebar-header { padding: 14px 16px; border-bottom: 0.5px solid rgba(0,0,0,0.1); }
+.brand { display: flex; align-items: center; gap: 8px; }
+.brand-icon { width: 30px; height: 30px; background: #1d4ed8; border-radius: 7px; display: flex; align-items: center; justify-content: center; }
+.brand-icon i { color: #fff; font-size: 16px; }
+.brand-name { font-size: 14px; font-weight: 700; color: #1a1a1a; }
+.brand-sub { font-size: 11px; color: #888; }
+.nav { padding: 10px 8px; flex: 1; overflow-y: auto; }
+.nav-section { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #aaa; padding: 8px 8px 4px; margin-top: 6px; }
+.nav-item { display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 6px; cursor: pointer; color: #555; font-size: 13px; transition: all 0.1s; margin-bottom: 1px; }
+.nav-item:hover { background: #f5f5f3; color: #1a1a1a; }
+.nav-item.active { background: #eff6ff; color: #1d4ed8; font-weight: 500; }
+.nav-item i { font-size: 16px; width: 18px; flex-shrink: 0; }
+.nav-badge { margin-left: auto; font-size: 10px; padding: 1px 6px; border-radius: 10px; font-weight: 500; }
+.nb-red { background: #fee2e2; color: #991b1b; }
+.nb-amber { background: #fef9c3; color: #854d0e; }
+.sidebar-footer { padding: 12px 16px; border-top: 0.5px solid rgba(0,0,0,0.1); }
+.main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+.topbar { background: #fff; border-bottom: 0.5px solid rgba(0,0,0,0.1); padding: 10px 20px; display: flex; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 10; }
+.topbar-title { font-size: 15px; font-weight: 600; flex: 1; }
+.insp-badge { display: flex; align-items: center; gap: 6px; background: #fef3c7; color: #92400e; padding: 5px 10px; border-radius: 6px; font-size: 12px; font-weight: 500; border: 0.5px solid #fde68a; }
+.btn { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 6px; font-size: 13px; cursor: pointer; border: 0.5px solid rgba(0,0,0,0.2); background: #fff; color: #1a1a1a; transition: all 0.1s; }
+.btn:hover { background: #f5f5f3; }
+.btn-primary { background: #1d4ed8; color: #fff; border-color: #1d4ed8; }
+.btn-primary:hover { background: #1e40af; }
+.btn-sm { font-size: 12px; padding: 4px 10px; }
+.page { padding: 20px; display: none; }
+.page.active { display: block; }
+.body-selector { display: flex; gap: 10px; margin-bottom: 20px; }
+.body-card { flex: 1; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.15s; background: #fff; text-align: center; }
+.body-card:hover { border-color: #93c5fd; background: #f0f7ff; }
+.body-card.selected { border-color: #1d4ed8; background: #eff6ff; }
+.bc-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-size: 18px; }
+.bc-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.bc-sub { font-size: 11px; color: #888; }
+.bc-naac { background: #ede9fe; color: #5b21b6; }
+.bc-aicte { background: #dbeafe; color: #1e40af; }
+.bc-nba { background: #dcfce7; color: #166534; }
+.bc-anna { background: #fef9c3; color: #854d0e; }
+.criteria-panel { display: none; }
+.criteria-panel.active { display: block; }
+.criteria-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; padding: 14px 16px; background: #fff; border-radius: 10px; border: 0.5px solid rgba(0,0,0,0.1); }
+.criteria-header-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.criteria-header-title { font-size: 15px; font-weight: 600; }
+.criteria-header-sub { font-size: 12px; color: #666; margin-top: 2px; }
+.overall-score { text-align: right; }
+.overall-score-val { font-size: 24px; font-weight: 700; }
+.criterion-card { background: #fff; border: 0.5px solid rgba(0,0,0,0.1); border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+.criterion-header { padding: 12px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.criterion-header:hover { background: #fafafa; }
+.criterion-num { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+.criterion-title { flex: 1; font-size: 13px; font-weight: 500; }
+.criterion-weight { font-size: 11px; color: #888; }
+.criterion-body { border-top: 0.5px solid rgba(0,0,0,0.08); padding: 14px 16px; display: none; }
+.criterion-body.open { display: block; }
+.req-item { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 0.5px solid rgba(0,0,0,0.07); }
+.req-item:last-child { border-bottom: none; }
+.req-check { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.rc-done { background: #dcfce7; color: #166534; }
+.rc-warn { background: #fef9c3; color: #854d0e; }
+.rc-miss { background: #fee2e2; color: #991b1b; }
+.req-info { flex: 1; }
+.req-title { font-size: 13px; font-weight: 500; line-height: 1.4; }
+.req-desc { font-size: 11px; color: #666; margin-top: 2px; line-height: 1.4; }
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+.stat-card { background: #f5f5f3; border-radius: 8px; padding: 14px; }
+.stat-label { font-size: 11px; color: #888; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
+.stat-value { font-size: 22px; font-weight: 600; }
+.stat-sub { font-size: 11px; color: #888; margin-top: 3px; }
+.c-green { color: #15803d; } .c-red { color: #b91c1c; } .c-amber { color: #b45309; }
+.card { background: #fff; border: 0.5px solid rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden; margin-bottom: 16px; }
+.card-header { padding: 13px 16px; border-bottom: 0.5px solid rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: space-between; }
+.card-title { font-size: 13px; font-weight: 600; }
+.card-body { padding: 16px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { text-align: left; padding: 8px 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; border-bottom: 0.5px solid rgba(0,0,0,0.1); font-weight: 500; }
+td { padding: 10px 12px; border-bottom: 0.5px solid rgba(0,0,0,0.06); color: #1a1a1a; vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #fafaf8; }
+.badge { display: inline-flex; align-items: center; padding: 2px 7px; border-radius: 10px; font-size: 11px; font-weight: 500; }
+.bg { background: #dcfce7; color: #166534; }
+.br { background: #fee2e2; color: #991b1b; }
+.ba { background: #fef9c3; color: #854d0e; }
+.bb { background: #dbeafe; color: #1e40af; }
+.bgr { background: #f3f4f6; color: #4b5563; }
+.alert { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 12px; }
+.alert-amber { background: #fffbeb; border: 0.5px solid #fde68a; color: #92400e; }
+.alert-blue { background: #eff6ff; border: 0.5px solid #bfdbfe; color: #1e3a8a; }
+.alert-red { background: #fff1f2; border: 0.5px solid #fecdd3; color: #9f1239; }
+.alert i { font-size: 16px; margin-top: 1px; flex-shrink: 0; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.progress-bar { height: 6px; background: #f0f0ee; border-radius: 3px; overflow: hidden; }
+.pf { height: 100%; border-radius: 3px; }
+.pg { background: #22c55e; } .pa { background: #f59e0b; } .pr { background: #ef4444; }
+.dept-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 0.5px solid rgba(0,0,0,0.07); }
+.dept-row:last-child { border-bottom: none; }
+.dept-name { font-size: 13px; font-weight: 500; width: 170px; flex-shrink: 0; }
+.dept-bar { flex: 1; }
+.dept-pct { font-size: 12px; color: #888; width: 36px; text-align: right; }
+.report-card { background: #fff; border: 0.5px solid rgba(0,0,0,0.1); border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; gap: 14px; cursor: pointer; margin-bottom: 10px; transition: all 0.1s; }
+.report-card:hover { border-color: rgba(0,0,0,0.2); background: #fafafa; }
+.ri { width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ri-blue { background: #dbeafe; color: #1e40af; }
+.ri-green { background: #dcfce7; color: #166534; }
+.ri-amber { background: #fef9c3; color: #854d0e; }
+.ri-purple { background: #ede9fe; color: #5b21b6; }
+.report-info { flex: 1; }
+.report-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.report-desc { font-size: 12px; color: #888; }
+.form-input { padding: 6px 10px; border: 0.5px solid rgba(0,0,0,0.2); border-radius: 6px; font-size: 13px; background: #fff; color: #1a1a1a; outline: none; }
+
+/* ── DAILY USE ADDITIONS ─────────────────────────────────── */
+.day-grid { display: grid; grid-template-columns: repeat(3,1fr); gap:12px; margin-bottom:20px; }
+.day-card { background:#fff; border:0.5px solid rgba(0,0,0,0.1); border-radius:10px; padding:14px 16px; }
+.day-card-title { font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:#888; margin-bottom:6px; }
+.day-card-val { font-size:22px; font-weight:600; }
+.day-card-sub { font-size:11px; color:#888; margin-top:3px; }
+.att-class-row { display:flex; align-items:center; gap:10px; padding:10px 12px; border-bottom:0.5px solid rgba(0,0,0,0.06); }
+.att-class-row:last-child { border-bottom:none; }
+.att-class-name { font-size:13px; font-weight:500; width:130px; flex-shrink:0; }
+.att-class-sub { font-size:11px; color:#888; }
+.att-dots { display:flex; gap:3px; flex:1; flex-wrap:wrap; }
+.att-dot { width:20px; height:20px; border-radius:50%; font-size:9px; font-weight:600; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; }
+.att-p { background:#dcfce7; color:#166534; }
+.att-a { background:#fee2e2; color:#991b1b; }
+.att-u { background:#f3f4f6; color:#9ca3af; }
+.att-pct { font-size:12px; font-weight:600; width:36px; text-align:right; }
+.att-save { font-size:11px; padding:3px 10px; }
+.lp-row { display:flex; align-items:center; gap:10px; padding:10px 12px; border-bottom:0.5px solid rgba(0,0,0,0.06); }
+.lp-row:last-child { border-bottom:none; }
+.lp-subject { font-size:13px; font-weight:500; flex:1; }
+.lp-staff { font-size:11px; color:#888; }
+.lp-units { display:flex; gap:3px; }
+.lp-unit { width:18px; height:18px; border-radius:4px; font-size:9px; font-weight:600; display:flex; align-items:center; justify-content:center; }
+.lu-done { background:#dcfce7; color:#166534; }
+.lu-cur { background:#dbeafe; color:#1e40af; }
+.lu-todo { background:#f3f4f6; color:#9ca3af; }
+.update-feed { display:flex; flex-direction:column; gap:0; }
+.feed-item { display:flex; gap:12px; padding:11px 16px; border-bottom:0.5px solid rgba(0,0,0,0.06); align-items:flex-start; }
+.feed-item:last-child { border-bottom:none; }
+.feed-avatar { width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; flex-shrink:0; color:#fff; }
+.feed-content { flex:1; }
+.feed-name { font-size:13px; font-weight:500; }
+.feed-action { font-size:12px; color:#64748b; margin-top:1px; }
+.feed-time { font-size:11px; color:#aaa; margin-top:2px; }
+.feed-badge { flex-shrink:0; }
+.feed-done { background:#22c55e; }
+.feed-warn { background:#f59e0b; }
+.feed-miss { background:#6366f1; }
+.pend-row { display:flex; align-items:center; gap:10px; padding:10px 12px; border-bottom:0.5px solid rgba(0,0,0,0.06); }
+.pend-row:last-child { border-bottom:none; }
+.pend-name { flex:1; font-size:13px; }
+.pend-dept { font-size:11px; color:#888; }
+.pend-tags { display:flex; gap:4px; flex-wrap:wrap; }
+.ping-btn { font-size:11px; padding:3px 10px; background:#fff; border:0.5px solid rgba(0,0,0,0.2); border-radius:5px; cursor:pointer; color:#1d4ed8; }
+.ping-btn:hover { background:#eff6ff; }
+.ping-btn.sent { color:#888; border-color:#e5e7eb; cursor:default; }
+.tab-row { display:flex; gap:0; border-bottom:0.5px solid rgba(0,0,0,0.1); margin-bottom:16px; }
+.tab { padding:8px 16px; font-size:13px; cursor:pointer; color:#888; border-bottom:2px solid transparent; margin-bottom:-0.5px; }
+.tab.active { color:#1d4ed8; border-bottom-color:#1d4ed8; font-weight:500; }
+.ia-table th { background:#fafafa; }
+.ia-input { width:48px; padding:3px 6px; border:0.5px solid rgba(0,0,0,0.2); border-radius:4px; font-size:12px; text-align:center; }
+.notice-row { display:flex; align-items:flex-start; gap:10px; padding:10px 14px; border-bottom:0.5px solid rgba(0,0,0,0.06); }
+.notice-row:last-child { border-bottom:none; }
+.notice-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+.notice-text { font-size:13px; line-height:1.4; flex:1; }
+.notice-time { font-size:11px; color:#aaa; white-space:nowrap; }
+</style>
+</head>
+<body>
+<div class="app">
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="brand">
+      <div class="brand-icon"><i class="ti ti-school"></i></div>
+      <div><div class="brand-name">Accredify</div><div class="brand-sub">RMK College of Engineering &amp; Technology</div></div>
+    </div>
+  </div>
+  <nav class="nav">
+    <div class="nav-section">Overview</div>
+    <div class="nav-item active" onclick="showPage('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
+    <div class="nav-section">Daily Work</div>
+    <div class="nav-item" onclick="showPage('attendance',this)"><i class="ti ti-clipboard-check"></i> Mark attendance <span class="nav-badge nb-amber">Today</span></div>
+    <div class="nav-item" onclick="showPage('lessonplan',this)"><i class="ti ti-writing"></i> Lesson plan log</div>
+    <div class="nav-item" onclick="showPage('iassess',this)"><i class="ti ti-pencil"></i> Internal marks</div>
+    <div class="nav-item" onclick="showPage('hodfeed',this)"><i class="ti ti-bell"></i> HOD feed <span class="nav-badge nb-red">3</span></div>
+    <div class="nav-section">Inspection Bodies</div>
+    <div class="nav-item" onclick="showPage('inspect',this)"><i class="ti ti-certificate"></i> Inspection readiness <span class="nav-badge nb-red">4</span></div>
+    <div class="nav-section">Records</div>
+    <div class="nav-item" onclick="showPage('faculty',this)"><i class="ti ti-users"></i> Faculty records <span class="nav-badge nb-amber">2</span></div>
+    <div class="nav-item" onclick="showPage('syllabus',this)"><i class="ti ti-book"></i> Syllabus tracking</div>
+    <div class="nav-item" onclick="showPage('students',this)"><i class="ti ti-id-badge"></i> Student records</div>
+    <div class="nav-item" onclick="showPage('infra',this)"><i class="ti ti-building"></i> Infrastructure</div>
+    <div class="nav-section">Documents</div>
+    <div class="nav-item" onclick="showPage('reports',this)"><i class="ti ti-file-text"></i> Generate reports</div>
+    <div class="nav-item" onclick="showPage('vault',this)"><i class="ti ti-folder"></i> Document vault</div>
+  </nav>
+  <div class="sidebar-footer">
+    <div style="font-size:11px;color:#888;margin-bottom:5px;">Next inspection</div>
+    <div style="font-size:12px;font-weight:600;color:#b45309;">Anna University — Jun 2027</div>
+    <div class="progress-bar" style="margin-top:6px;"><div class="pf pa" style="width:68%;"></div></div>
+    <div style="font-size:11px;color:#888;margin-top:4px;">68% ready</div>
+  </div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="topbar-title">Dashboard</div>
+    <div style="font-size:12px;color:#888;">Academic Year 2026-27</div>
+    <div class="insp-badge"><i class="ti ti-calendar-event"></i> Anna University inspection: Jun 2027</div>
+    <button class="btn btn-primary" onclick="alert('In the full product, this generates a formatted PDF report instantly.')"><i class="ti ti-download"></i> Export report</button>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="page active" id="page-dashboard">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Faculty strength</div><div class="stat-value">84 <span style="font-size:14px;font-weight:400;color:#888;">/ 90</span></div><div class="stat-sub c-amber">6 vacancies pending</div></div>
+      <div class="stat-card"><div class="stat-label">Avg attendance</div><div class="stat-value">78<span style="font-size:14px;">%</span></div><div class="stat-sub c-amber">Below 80% threshold</div></div>
+      <div class="stat-card"><div class="stat-label">Syllabus completion</div><div class="stat-value">71<span style="font-size:14px;">%</span></div><div class="stat-sub" style="color:#888;">Semester 4, Week 11</div></div>
+      <div class="stat-card"><div class="stat-label">Overall readiness</div><div class="stat-value c-amber">68<span style="font-size:14px;">%</span></div><div class="stat-sub c-red">4 critical gaps</div></div>
+    </div>
+    <div class="alert alert-amber"><i class="ti ti-alert-triangle"></i><div><strong>Inspection in ~12 months:</strong> 4 records are missing or incomplete - faculty PG certificates (2 staff), lab equipment register not updated, IQAC minutes for March 2027 not uploaded.</div></div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Readiness across inspection bodies</div></div>
+        <div class="card-body">
+          <div class="dept-row"><div class="dept-name" style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:50%;background:#5b21b6;display:inline-block;"></span>NAAC (7 Criteria)</div><div class="dept-bar"><div class="progress-bar"><div class="pf pa" style="width:72%"></div></div></div><div class="dept-pct">72%</div></div>
+          <div class="dept-row"><div class="dept-name" style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:50%;background:#1e40af;display:inline-block;"></span>AICTE (Annual)</div><div class="dept-bar"><div class="progress-bar"><div class="pf pg" style="width:81%"></div></div></div><div class="dept-pct">81%</div></div>
+          <div class="dept-row"><div class="dept-name" style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:50%;background:#166534;display:inline-block;"></span>NBA (10 Criteria)</div><div class="dept-bar"><div class="progress-bar"><div class="pf pa" style="width:63%"></div></div></div><div class="dept-pct">63%</div></div>
+          <div class="dept-row"><div class="dept-name" style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:50%;background:#854d0e;display:inline-block;"></span>Anna University</div><div class="dept-bar"><div class="progress-bar"><div class="pf pa" style="width:68%"></div></div></div><div class="dept-pct">68%</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Department readiness</div></div>
+        <div class="card-body">
+          <div class="dept-row"><div class="dept-name">Computer Science</div><div class="dept-bar"><div class="progress-bar"><div class="pf pg" style="width:91%"></div></div></div><div class="dept-pct">91%</div></div>
+          <div class="dept-row"><div class="dept-name">Electronics &amp; Comm.</div><div class="dept-bar"><div class="progress-bar"><div class="pf pg" style="width:85%"></div></div></div><div class="dept-pct">85%</div></div>
+          <div class="dept-row"><div class="dept-name">Mechanical Engg.</div><div class="dept-bar"><div class="progress-bar"><div class="pf pa" style="width:70%"></div></div></div><div class="dept-pct">70%</div></div>
+          <div class="dept-row"><div class="dept-name">Civil Engg.</div><div class="dept-bar"><div class="progress-bar"><div class="pf pa" style="width:62%"></div></div></div><div class="dept-pct">62%</div></div>
+          <div class="dept-row"><div class="dept-name">Electrical &amp; Elec.</div><div class="dept-bar"><div class="progress-bar"><div class="pf pr" style="width:47%"></div></div></div><div class="dept-pct">47%</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Recent activity</div></div>
+        <div class="card-body" style="padding-top:8px;padding-bottom:8px;">
+          <div style="display:flex;gap:12px;padding:9px 0;border-bottom:0.5px solid rgba(0,0,0,0.07);"><div style="width:8px;height:8px;border-radius:50%;background:#22c55e;margin-top:5px;flex-shrink:0;"></div><div><div style="font-size:13px;">Dr. Kavitha uploaded PhD certificate</div><div style="font-size:11px;color:#888;">Today, 10:32 AM - EEE Dept</div></div></div>
+          <div style="display:flex;gap:12px;padding:9px 0;border-bottom:0.5px solid rgba(0,0,0,0.07);"><div style="width:8px;height:8px;border-radius:50%;background:#f59e0b;margin-top:5px;flex-shrink:0;"></div><div><div style="font-size:13px;">Lab equipment log flagged - 3 items missing serial numbers</div><div style="font-size:11px;color:#888;">Yesterday - Mech Dept</div></div></div>
+          <div style="display:flex;gap:12px;padding:9px 0;border-bottom:0.5px solid rgba(0,0,0,0.07);"><div style="width:8px;height:8px;border-radius:50%;background:#3b82f6;margin-top:5px;flex-shrink:0;"></div><div><div style="font-size:13px;">Syllabus completion report generated</div><div style="font-size:11px;color:#888;">12 Jul - Admin</div></div></div>
+          <div style="display:flex;gap:12px;padding:9px 0;"><div style="width:8px;height:8px;border-radius:50%;background:#22c55e;margin-top:5px;flex-shrink:0;"></div><div><div style="font-size:13px;">FDP attendance records updated - 12 staff</div><div style="font-size:11px;color:#888;">10 Jul - CSE Dept</div></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Quick actions</div></div>
+        <div class="card-body"><div style="display:flex;flex-direction:column;gap:8px;">
+          <button class="btn" style="justify-content:flex-start;" onclick="showPage('inspect',document.querySelector('[onclick*=inspect]'))"><i class="ti ti-certificate"></i> Check inspection readiness</button>
+          <button class="btn" style="justify-content:flex-start;" onclick="showPage('faculty',document.querySelector('[onclick*=faculty]'))"><i class="ti ti-user-plus"></i> Add faculty record</button>
+          <button class="btn" style="justify-content:flex-start;" onclick="showPage('reports',document.querySelector('[onclick*=reports]'))"><i class="ti ti-file-text"></i> Generate report</button>
+          <button class="btn" style="justify-content:flex-start;" onclick="showPage('vault',document.querySelector('[onclick*=vault]'))"><i class="ti ti-upload"></i> Upload documents</button>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSPECTION BODIES -->
+  <div class="page" id="page-inspect">
+    <div class="alert alert-blue"><i class="ti ti-info-circle"></i><div><strong>Requirements sourced from official documents:</strong> NAAC Binary Accreditation Framework (Feb 2025), AICTE Approval Process Handbook 2024-27, NBA SAR 2025 / GAPC v4.0, and Anna University Affiliation Guidelines 2026-27.</div></div>
+    <div class="body-selector">
+      <div class="body-card selected" id="bc-naac" onclick="selectBody('naac')">
+        <div class="bc-icon bc-naac"><i class="ti ti-award"></i></div>
+        <div class="bc-name">NAAC</div>
+        <div class="bc-sub">10 Attributes · Binary 2025</div>
+      </div>
+      <div class="body-card" id="bc-aicte" onclick="selectBody('aicte')">
+        <div class="bc-icon bc-aicte"><i class="ti ti-license"></i></div>
+        <div class="bc-name">AICTE</div>
+        <div class="bc-sub">APH 2024-27 · Annual</div>
+      </div>
+      <div class="body-card" id="bc-nba" onclick="selectBody('nba')">
+        <div class="bc-icon bc-nba"><i class="ti ti-rosette"></i></div>
+        <div class="bc-name">NBA</div>
+        <div class="bc-sub">10 Criteria · SAR 2025</div>
+      </div>
+      <div class="body-card" id="bc-anna" onclick="selectBody('anna')">
+        <div class="bc-icon bc-anna"><i class="ti ti-building-community"></i></div>
+        <div class="bc-name">Anna University</div>
+        <div class="bc-sub">2026-27 New Guidelines</div>
+      </div>
+    </div>
+
+    <!-- NAAC PANEL -->
+    <div class="criteria-panel active" id="panel-naac">
+      <div class="criteria-header">
+        <div class="criteria-header-icon bc-naac"><i class="ti ti-award"></i></div>
+        <div style="flex:1">
+          <div class="criteria-header-title">NAAC — Binary Accreditation Framework (2025)</div>
+          <div style="font-size:12px;color:#666;margin-top:2px;">10 Attributes across 3 layers: Inputs · Processes · Outcomes. Announced Feb 10, 2025. Portal launch pending as of Jun 2026. No CGPA — binary Accredited / Not Accredited outcome only.</div>
+        </div>
+        <div style="text-align:right;"><div style="font-size:24px;font-weight:700;color:#b45309;">72%</div><div style="font-size:11px;color:#888;">Ready</div></div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-bottom:14px;">
+        <div style="flex:1;background:#ede9fe;border-radius:8px;padding:10px 14px;font-size:12px;color:#5b21b6;font-weight:500;">INPUTS (Attr 1–4)<br><span style="font-size:11px;font-weight:400;">Resources the institution possesses</span></div>
+        <div style="flex:1;background:#dbeafe;border-radius:8px;padding:10px 14px;font-size:12px;color:#1e40af;font-weight:500;">PROCESSES (Attr 5–7)<br><span style="font-size:11px;font-weight:400;">How effectively it operates</span></div>
+        <div style="flex:1;background:#dcfce7;border-radius:8px;padding:10px 14px;font-size:12px;color:#166534;font-weight:500;">OUTCOMES (Attr 8–10)<br><span style="font-size:11px;font-weight:400;">Proven results and impact</span></div>
+      </div>
+
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#5b21b6;padding:4px 0 8px;">INPUTS — What the institution has</div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#ede9fe;color:#5b21b6;">A1</div>
+          <div class="criterion-title">Curriculum Design</div>
+          <div class="criterion-weight">Inputs layer</div>
+          <span class="badge ba" style="margin-right:8px;">75%</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">OBE-aligned curriculum with CO-PO mapping</div><div class="req-desc">Board of Studies (BoS) minutes showing approval of OBE-aligned revisions must be maintained</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">National Credit Framework (NCRF) alignment</div><div class="req-desc">Credits aligned to NCRF and Indian Knowledge Systems (IKS) as per NEP 2020</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Academic Bank of Credits (ABC) implementation</div><div class="req-desc">APAAR/ABC ID enrollment evidence — credits must flow through national system</div></div><span class="badge br">Not implemented</span></div>
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Stakeholder feedback on curriculum (alumni + industry)</div><div class="req-desc">Documented evidence of industry and alumni input shaping curriculum — partial</div></div><span class="badge ba">Partial</span></div>
+        </div>
+      </div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#ede9fe;color:#5b21b6;">A2</div>
+          <div class="criterion-title">Faculty Resources</div>
+          <div class="criterion-weight">Inputs layer</div>
+          <span class="badge ba" style="margin-right:8px;">68%</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Faculty diversity documentation (state + national)</div><div class="req-desc">NAAC Binary model evaluates faculty through competence and stability — diversity across states</div></div><span class="badge ba">Partial</span></div>
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">PhD enrollment or completion letters (progression proof)</div><div class="req-desc">Faculty enrolled in PhD or completion certificates — tracks academic progression</div></div><span class="badge ba">28% done</span></div>
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Industry experience certificates for adjunct/visiting faculty</div><div class="req-desc">Professional exposure validation for visiting faculty — not yet collected</div></div><span class="badge br">Missing</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Faculty qualification records (PG/PhD degrees)</div><div class="req-desc">92% PG qualified; degree certificates uploaded for 82 of 84 faculty</div></div><span class="badge bg">82/84</span></div>
+        </div>
+      </div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#ede9fe;color:#5b21b6;">A3</div>
+          <div class="criterion-title">Infrastructure (Physical + Digital)</div>
+          <div class="criterion-weight">Inputs layer</div>
+          <span class="badge ba" style="margin-right:8px;">70%</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Internet bandwidth bills (proof of functional connectivity)</div><div class="req-desc">100 Mbps leased line — bandwidth bills retained as evidence</div></div><span class="badge bg">100 Mbps</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Software license agreements (legal digital infrastructure)</div><div class="req-desc">Licensed software for labs, admin systems — agreements maintained</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Geotagged photos of accessibility features</div><div class="req-desc">NAAC Binary requires geotagged photos of ramps, lifts, inclusive infrastructure</div></div><span class="badge br">Not done</span></div>
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">LMS activity logs (genuine usage evidence)</div><div class="req-desc">Learning Management System logs showing actual teaching activity — not just logins</div></div><span class="badge br">Not maintained</span></div>
+        </div>
+      </div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#ede9fe;color:#5b21b6;">A4</div>
+          <div class="criterion-title">Financial Resources and Management</div>
+          <div class="criterion-weight">Inputs layer</div>
+          <span class="badge bg" style="margin-right:8px;">82%</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Audited corpus fund statements (last 3 years)</div><div class="req-desc">Audited accounts for 2023-24, 2024-25, 2025-26 uploaded</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Research seed money distribution records</div><div class="req-desc">NAAC checks that funds are allocated toward research — partially documented</div></div><span class="badge ba">Partial</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Resource mobilization policy</div><div class="req-desc">Policy document on how funds are generated and allocated — present</div></div><span class="badge bg">Done</span></div>
+        </div>
+      </div>
+
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#1e40af;padding:12px 0 8px;">PROCESSES — How the institution operates</div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#dbeafe;color:#1e40af;">A5</div>
+          <div class="criterion-title">Learning and Teaching</div>
+          <div class="criterion-weight">Processes layer</div>
+          <span class="badge ba" style="margin-right:8px;">65%</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Lesson plans reflecting blended / experiential pedagogy</div><div class="req-desc">NAAC wants lesson plans showing flipped classroom, experiential learning — not just coverage</div></div><span class="badge ba">39/42</span></div>
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">LMS logs with timestamped digital teaching evidence</div><div class="req-desc">Binary model: claims of ICT usage must be backed by actual LMS logs</div></div><span class="badge br">Missing</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">CIE (Continuous Internal Evaluation) records</div><div class="req-desc">IA1 + IA2 marks uploaded for all departments — complete</div></div><span class="badge bg">Done</span></div>
+        </div>
+      </div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#dbeafe;color:#1e40af;">A6</div>
+          <div class="criterion-title">Extended Curricular Engagements</div>
+          <div class="criterion-weight">Processes layer</div>
+          <span class="badge ba" style="margin-right:8px;">72%</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">NSS/NCC reports with date-stamped photos</div><div class="req-desc">Photos-only are no longer enough — NAAC requires reports with impact data</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Student feedback data on value-added courses</div><div class="req-desc">Structured feedback on MOOCs, certifications and co-curricular courses</div></div><span class="badge ba">Partial</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Club activity registers (participation + outcomes)</div><div class="req-desc">Technical clubs, cultural, sports — participation records maintained</div></div><span class="badge bg">Done</span></div>
+        </div>
+      </div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#dbeafe;color:#1e40af;">A7</div>
+          <div class="criterion-title">Governance and Administration</div>
+          <div class="criterion-weight">Processes layer</div>
+          <span class="badge ba" style="margin-right:8px;">70%</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Organograms showing institutional structure</div><div class="req-desc">Structural clarity with reporting lines — published on website and in records</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">E-governance screenshots (finance, admin, academic modules)</div><div class="req-desc">NAAC evaluates governance through systems not committees — partial ERP usage</div></div><span class="badge ba">Partial</span></div>
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">IQAC minutes — all months with grievance redressal logs</div><div class="req-desc">March 2027 IQAC minutes missing; complaint resolution timelines not logged</div></div><span class="badge br">Missing</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">AQAR submitted on NAAC portal (annual)</div><div class="req-desc">2025-26 AQAR submitted — late or missing AQARs disqualify from next cycle</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">AISHE data matches NAAC portal data exactly</div><div class="req-desc">One Nation One Data: any mismatch between AISHE, NIRF, and NAAC is auto-flagged</div></div><span class="badge bg">Verified</span></div>
+        </div>
+      </div>
+
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#166534;padding:12px 0 8px;">OUTCOMES — What the institution proves it delivers</div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#dcfce7;color:#166534;">A8</div>
+          <div class="criterion-title">Student Outcomes</div>
+          <div class="criterion-weight">Outcomes layer</div>
+          <span class="badge bg" style="margin-right:8px;">84%</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Placement offer letters tied to unique student IDs</div><div class="req-desc">NAAC validates placements via offer letters linked to student IDs — third-party verification</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Higher education admission letters (academic progression)</div><div class="req-desc">PG admissions, GATE, NET qualification certificates</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Startup registration documents (entrepreneurship)</div><div class="req-desc">Student startups — DPIIT registration or incubator records needed</div></div><span class="badge ba">2 startups</span></div>
+        </div>
+      </div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#dcfce7;color:#166534;">A9</div>
+          <div class="criterion-title">Research and Innovation Outcomes</div>
+          <div class="criterion-weight">Outcomes layer</div>
+          <span class="badge ba" style="margin-right:8px;">62%</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Scopus / Web of Science indexed publication links</div><div class="req-desc">Only publications on recognized platforms count — 38 papers, target 60+</div></div><span class="badge ba">38 papers</span></div>
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Patent grant certificates (not application receipts)</div><div class="req-desc">NAAC only accepts granted patents — pending applications do not count</div></div><span class="badge br">None granted</span></div>
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Funded research projects (DST, SERB, AICTE, industry)</div><div class="req-desc">Consultancy revenue documents and externally funded project grants</div></div><span class="badge br">None</span></div>
+        </div>
+      </div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#dcfce7;color:#166534;">A10</div>
+          <div class="criterion-title">Sustainability Outcomes</div>
+          <div class="criterion-weight">Outcomes layer</div>
+          <span class="badge ba" style="margin-right:8px;">50%</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Green Audit certificate (ISO-certified agency only)</div><div class="req-desc">Self-audits hold no weight — must be from an ISO-certified external agency</div></div><span class="badge br">Missing</span></div>
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Energy Audit certificate (ISO-certified agency only)</div><div class="req-desc">External energy audit — internal committee reports are not accepted</div></div><span class="badge br">Missing</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Environment / waste management activities</div><div class="req-desc">Green campus activities documented — but formal external audit still needed</div></div><span class="badge ba">Activity done</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AICTE PANEL -->
+    <div class="criteria-panel" id="panel-aicte">
+      <div class="criteria-header">
+        <div class="criteria-header-icon bc-aicte"><i class="ti ti-license"></i></div>
+        <div style="flex:1">
+          <div class="criteria-header-title">AICTE — Approval Process Handbook 2024-27</div>
+          <div style="font-size:12px;color:#666;margin-top:2px;">Annual approval (or 3-year block for high performers). FSR now unified at 1:20. Cadre ratio Professor:Assoc:Asst = 1:2:6. Source: AICTE APH 2024-27 official handbook.</div>
+        </div>
+        <div style="text-align:right;"><div style="font-size:24px;font-weight:700;color:#15803d;">81%</div><div style="font-size:11px;color:#888;">Ready</div></div>
+      </div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#dbeafe;color:#1e40af;">F</div>
+          <div class="criterion-title">Faculty Norms (Chapter VI, APH 2024-27)</div>
+          <div class="criterion-weight">Core compliance</div>
+          <span class="badge ba" style="margin-right:8px;">74%</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Faculty-Student Ratio ≤ 1:20 (APH 2024-27 norm)</div><div class="req-desc">FSR unified to 1:20 for all degree institutions per APH 2024-27. Current: 17:1 — compliant.</div></div><span class="badge bg">17:1 ✓</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Cadre ratio — Professor:Assoc. Prof:Asst. Prof = 1:2:6</div><div class="req-desc">AICTE mandates this cadre ratio for UG colleges. Must be verified per department.</div></div><span class="badge ba">Verify dept-wise</span></div>
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">PhD requirement for HODs and senior faculty (pro-rata basis)</div><div class="req-desc">At least 75% of required PhD count must be regular faculty. Current: 28% — borderline.</div></div><span class="badge ba">28% PhD</span></div>
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">FDP — minimum 40 hours per faculty per year</div><div class="req-desc">Mandatory FDP via AICTE Training and Learning Academy (ATAL). 23 staff below norm.</div></div><span class="badge br">23 below 40hrs</span></div>
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">PG/PhD certificate uploads for all teaching staff</div><div class="req-desc">Ramesh Kumar (Mech) and Priya S. (EEE) — PG certificates missing from portal</div></div><span class="badge br">2 missing</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Salary disbursement — pay slips last 3 months</div><div class="req-desc">EVC verifies faculty genuineness via salary records. All pay slips uploaded.</div></div><span class="badge bg">Done</span></div>
+        </div>
+      </div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#dbeafe;color:#1e40af;">I</div>
+          <div class="criterion-title">Infrastructure Norms (Chapter VI, APH 2024-27)</div>
+          <div class="criterion-weight">Core compliance</div>
+          <span class="badge bg" style="margin-right:8px;">83%</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Classroom area — 0.75 sqm per student minimum</div><div class="req-desc">Physical verification by EVC. All classrooms verified compliant.</div></div><span class="badge bg">Compliant</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Laboratory area — 1.5 sqm per student minimum</div><div class="req-desc">All 18 labs verified. Area norms met per department.</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Lab equipment register with invoices and serial numbers</div><div class="req-desc">EVC physically verifies equipment. 34 items missing serial numbers; 8 missing invoices.</div></div><span class="badge br">34 missing</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Internet — 50 Mbps leased line minimum</div><div class="req-desc">100 Mbps leased line — above norm and bill retained.</div></div><span class="badge bg">100 Mbps</span></div>
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Building completion certificate</div><div class="req-desc">Block D completion certificate renewal pending with local body.</div></div><span class="badge ba">Pending</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">CCTV, fire safety, and first aid in all labs</div><div class="req-desc">Safety infrastructure verified and operational across campus.</div></div><span class="badge bg">Done</span></div>
+        </div>
+      </div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#dbeafe;color:#1e40af;">A</div>
+          <div class="criterion-title">Academic and Regulatory Compliance</div>
+          <div class="criterion-weight">Core compliance</div>
+          <span class="badge bg" style="margin-right:8px;">86%</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">AICTE portal intake data matches actual enrollment</div><div class="req-desc">Sanctioned vs actual enrollment must match — cross-verified by AICTE portal.</div></div><span class="badge bg">Match ✓</span></div>
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">30% NBA-accredited courses — needed for 3-year block approval</div><div class="req-desc">NIRF rank + NBA 30% + 80% enrollment = eligible for 3-year extension. Currently 25% NBA.</div></div><span class="badge ba">25% NBA</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">APAAR / ABC student ID enrollment</div><div class="req-desc">APH 2024-27 mandates APAAR ID registration for all students (One Nation One Student ID).</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Anti-ragging committee and undertakings</div><div class="req-desc">Committee constituted; student and parent undertakings collected and filed.</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Institution's Innovation Council (IIC) — INDOVATION program</div><div class="req-desc">APH 2024-27 places huge emphasis on IIC. Registered but activity records incomplete.</div></div><span class="badge ba">Registered</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NBA PANEL -->
+    <div class="criteria-panel" id="panel-nba">
+      <div class="criteria-header">
+        <div class="criteria-header-icon bc-nba"><i class="ti ti-rosette"></i></div>
+        <div style="flex:1">
+          <div class="criteria-header-title">NBA — SAR 2025 Format (GAPC v4.0 / Washington Accord 2021)</div>
+          <div style="font-size:12px;color:#666;margin-top:2px;">10 Criteria · 1000 marks · Tier-II (Affiliated College) · Min 900 marks + 60% in each criterion to pass · Valid 5 years. New format mandatory from Jan 2025.</div>
+        </div>
+        <div style="text-align:right;"><div style="font-size:24px;font-weight:700;color:#b45309;">63%</div><div style="font-size:11px;color:#888;">Ready</div></div>
+      </div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#dcfce7;color:#166534;">C1</div>
+          <div class="criterion-title">Vision, Mission and Program Educational Objectives (PEOs)</div>
+          <div class="criterion-weight">50 marks</div>
+          <span class="badge bg" style="margin-right:8px;">84%</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Department Vision aligned to Institute Vision</div><div class="req-desc">All 5 department vision-mission statements verified and displayed on campus</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">PEOs drafted with documented alumni and industry feedback</div><div class="req-desc">NBA SAR 2025: PEOs must be backed by stakeholder survey proof — not copied from website</div></div><span class="badge ba">Partial</span></div>
+        </div>
+      </div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#dcfce7;color:#166534;">C2</div>
+          <div class="criterion-title">Program Curriculum and Teaching-Learning Processes</div>
+          <div class="criterion-weight">100 marks</div>
+          <span class="badge ba" style="margin-right:8px;">65%</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Curriculum gap analysis (university syllabus vs industry needs)</div><div class="req-desc">Tier-II mandate — must identify and document gaps between AU syllabus and current industry</div></div><span class="badge ba">In progress</span></div>
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Complex Engineering Problem (CEP) evidence in lab experiments</div><div class="req-desc">GAPC v4.0: Labs assessed on open-ended experiment quality — not just equipment presence</div></div><span class="badge br">Not documented</span></div>
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Lesson plans (all subjects)</div><div class="req-desc">39 of 42 lesson plans uploaded — 3 missing (Mech, Civil)</div></div><span class="badge ba">39/42</span></div>
+        </div>
+      </div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#dcfce7;color:#166534;">C3</div>
+          <div class="criterion-title">Course Outcomes (COs) and Program Outcomes (POs) — OBE Engine</div>
+          <div class="criterion-weight">175 marks</div>
+          <span class="badge br" style="margin-right:8px;">48% ⚠</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">CO-PO mapping with justified correlation levels (1/2/3)</div><div class="req-desc">Mapping correlation must be justified in writing — 4 subjects still pending</div></div><span class="badge ba">38/42</span></div>
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">CO attainment calculation (direct + indirect methods)</div><div class="req-desc">Must show actual % attainment per CO using IA marks, end-sem, and exit surveys</div></div><span class="badge br">Missing</span></div>
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Continuous improvement loop with documented corrective actions</div><div class="req-desc">If CO target missed: specific action must be taken and documented. E.g. "Added Python module as PO5 attainment was low in 2024"</div></div><span class="badge br">Not documented</span></div>
+        </div>
+      </div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#dcfce7;color:#166534;">C4</div>
+          <div class="criterion-title">Students Performance</div>
+          <div class="criterion-weight">100 marks</div>
+          <span class="badge bg" style="margin-right:8px;">80%</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Success Index (SI) — graduates without backlogs (3 batches)</div><div class="req-desc">NBA: graduation rate without backlogs must be carefully calculated per definition</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Placement and higher studies data (3 years)</div><div class="req-desc">Offer letters with company names and packages uploaded</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Academic Performance Index (API) — last 3 years</div><div class="req-desc">API = f(university results) for CAY, CAYm1, CAYm2 — partially compiled</div></div><span class="badge ba">Partial</span></div>
+        </div>
+      </div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#dcfce7;color:#166534;">C5</div>
+          <div class="criterion-title">Faculty Information and Contributions</div>
+          <div class="criterion-weight">200 marks</div>
+          <span class="badge ba" style="margin-right:8px;">67%</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Cadre ratio verification per department (1:2:6)</div><div class="req-desc">Must be verified separately per department — overall college ratio alone is insufficient</div></div><span class="badge ba">Verify</span></div>
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Faculty data for CAY, CAYm1, CAYm2 (3-year history)</div><div class="req-desc">SAR 2025 requires faculty strength reported separately for each of last 3 years — incomplete</div></div><span class="badge br">Incomplete</span></div>
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Research — Scopus/SCI publications only</div><div class="req-desc">Paid open-access journals not counted. 38 indexed papers — quality review needed.</div></div><span class="badge ba">38 papers</span></div>
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Faculty retention rate (turnover % per year)</div><div class="req-desc">High turnover is a major red flag in NBA evaluation — not currently tracked</div></div><span class="badge br">Not tracked</span></div>
+        </div>
+      </div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#dcfce7;color:#166534;">C6</div>
+          <div class="criterion-title">Facilities and Technical Support (Labs only)</div>
+          <div class="criterion-weight">75 marks</div>
+          <span class="badge ba" style="margin-right:8px;">70%</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Lab equipment list with manufacturer, model, specifications</div><div class="req-desc">Equipment listed with full specifications per lab — complete</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Safety charts and fire extinguishers visibly in every lab</div><div class="req-desc">GAPC v4.0: safety equipment and first aid must be visible in each lab — not yet audited</div></div><span class="badge br">Not audited</span></div>
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Lab assistant qualification certificates</div><div class="req-desc">Technical staff qualifications must be documented — partially done</div></div><span class="badge ba">Partial</span></div>
+        </div>
+      </div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#dcfce7;color:#166534;">C7</div>
+          <div class="criterion-title">Continuous Improvement — "Soul of NBA"</div>
+          <div class="criterion-weight">75 marks</div>
+          <span class="badge br" style="margin-right:8px;">30% ⚠</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">3-year PO/PSO attainment trend analysis</div><div class="req-desc">Must show PO attainment data from CAY, CAYm1, CAYm2 with trend analysis</div></div><span class="badge br">Missing</span></div>
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Documented corrective actions for missed PO targets</div><div class="req-desc">The "loop": low attainment → specific action taken → improved outcome. Not documented.</div></div><span class="badge br">Not documented</span></div>
+        </div>
+      </div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#dcfce7;color:#166534;">C8</div>
+          <div class="criterion-title">First Year Academics (separate FSR)</div>
+          <div class="criterion-weight">75 marks</div>
+          <span class="badge ba" style="margin-right:8px;">72%</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">First year FSR calculated independently</div><div class="req-desc">Separate FSR for first year is mandatory — done</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">First year pass % for last 3 years</div><div class="req-desc">Often overlooked since first year is centralised — must be documented separately</div></div><span class="badge ba">Partial</span></div>
+        </div>
+      </div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#dcfce7;color:#166534;">C9</div>
+          <div class="criterion-title">Student Support Systems</div>
+          <div class="criterion-weight">75 marks</div>
+          <span class="badge bg" style="margin-right:8px;">80%</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Faculty mentor system with meeting records</div><div class="req-desc">Mentor-student ratio and meeting logs maintained</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Co-curricular and extracurricular records</div><div class="req-desc">Technical fest, sports, cultural events — participation data complete</div></div><span class="badge bg">Done</span></div>
+        </div>
+      </div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#dcfce7;color:#166534;">C10</div>
+          <div class="criterion-title">Governance, Institutional Support and Financial Resources</div>
+          <div class="criterion-weight">75 marks</div>
+          <span class="badge bg" style="margin-right:8px;">81%</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Annual budget allocation records</div><div class="req-desc">Budget statements for labs, library, FDP uploaded</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Audited financial statements (3 years)</div><div class="req-desc">2023-24, 2024-25, 2025-26 audited accounts uploaded</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Establishment details match AICTE portal exactly</div><div class="req-desc">Zero-tolerance: any mismatch between SAR data and AICTE records causes pre-qualifier rejection</div></div><span class="badge ba">Verify</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANNA UNIVERSITY PANEL -->
+    <div class="criteria-panel" id="panel-anna">
+      <div class="criteria-header">
+        <div class="criteria-header-icon bc-anna"><i class="ti ti-building-community"></i></div>
+        <div style="flex:1">
+          <div class="criteria-header-title">Anna University — Affiliation Guidelines 2026-27</div>
+          <div style="font-size:12px;color:#666;margin-top:2px;">Strictest-ever guidelines after ghost faculty scandal. 1,000+ fake faculty found in 2024-25. New rules: geotagged photos, Aadhaar biometrics, unique 10-digit faculty UIDs. Source: DTNext Apr 2026 / AU official circular.</div>
+        </div>
+        <div style="text-align:right;"><div style="font-size:24px;font-weight:700;color:#b45309;">68%</div><div style="font-size:11px;color:#888;">Ready</div></div>
+      </div>
+
+      <div class="alert alert-red" style="margin-bottom:14px;"><i class="ti ti-alert-circle"></i><div><strong>Ghost faculty crackdown (2026-27):</strong> AU found 1,000+ fake faculty in 2024-25. New rules require geotagged on-campus photos, Aadhaar-linked biometric verification, and unique 10-digit Faculty UIDs. Applications that are incomplete or delayed will be rejected outright.</div></div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#fef9c3;color:#854d0e;">F</div>
+          <div class="criterion-title">Faculty Records — 2026-27 New Rules</div>
+          <div class="criterion-weight">Critical</div>
+          <span class="badge ba" style="margin-right:8px;">64%</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Faculty register — complete with department, designation, qualification</div><div class="req-desc">All 84 faculty entries complete with department and role</div></div><span class="badge bg">84/84</span></div>
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Geotagged on-campus faculty photographs (NEW 2026-27)</div><div class="req-desc">NEW: Photos must be geotagged and taken on-campus to prevent fake submissions</div></div><span class="badge br">Not done</span></div>
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Unique 10-digit Faculty UID assignment (NEW 2026-27)</div><div class="req-desc">NEW: Each faculty member must be assigned a unique 10-digit ID uploaded to AU portal</div></div><span class="badge br">Not done</span></div>
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Aadhaar-linked biometric verification (NEW 2026-27)</div><div class="req-desc">NEW: Biometric verification linked to Aadhaar mandatory to confirm faculty identity</div></div><span class="badge br">Not done</span></div>
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">BE/BTech + ME/MTech for Asst. Professors (qualification norms)</div><div class="req-desc">Asst. Prof: BE + ME mandatory. PhD mandatory for Assoc. Professors. First class in UG or PG.</div></div><span class="badge br">2 missing certs</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Pay slips — last 3 months (salary cross-check)</div><div class="req-desc">AU cross-checks salary with bank records to detect ghost faculty</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Bank account details of all teaching staff</div><div class="req-desc">AU requires bank details to cross-verify salary disbursement — partially collected</div></div><span class="badge ba">62 of 84</span></div>
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">FDP proof (40 hrs/year minimum)</div><div class="req-desc">23 staff below 40 FDP hours — flagged in AICTE and AU inspections</div></div><span class="badge ba">23 below</span></div>
+        </div>
+      </div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#fef9c3;color:#854d0e;">A</div>
+          <div class="criterion-title">Academic Records</div>
+          <div class="criterion-weight">Critical</div>
+          <span class="badge ba" style="margin-right:8px;">74%</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Lesson plans — all subjects all departments</div><div class="req-desc">39/42 uploaded — 3 missing from Mech and Civil departments</div></div><span class="badge ba">39/42</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Attendance register — all sections, all months</div><div class="req-desc">Physical and digital attendance records maintained for all classes</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Internal assessment mark sheets (IA1 + IA2)</div><div class="req-desc">Both internal assessments completed and uploaded for all departments</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">CO-PO mapping and attainment (AU now checks OBE)</div><div class="req-desc">AU has begun checking OBE compliance — 4 subjects still unmapped</div></div><span class="badge br">4 pending</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">University exam results — pass % batch-wise (last 3 years)</div><div class="req-desc">Result analysis with pass % per dept uploaded</div></div><span class="badge bg">Done</span></div>
+        </div>
+      </div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#fef9c3;color:#854d0e;">I</div>
+          <div class="criterion-title">Infrastructure and AICTE Approvals</div>
+          <div class="criterion-weight">Critical</div>
+          <span class="badge ba" style="margin-right:8px;">66%</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Lab equipment register — complete with serial numbers</div><div class="req-desc">Inspectors physically verify equipment. 34 items missing serial numbers.</div></div><span class="badge br">34 missing</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Library catalogue and e-resource subscriptions</div><div class="req-desc">24,810 books catalogued; Delnet/NDL subscription active</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Internet bandwidth (50 Mbps minimum)</div><div class="req-desc">100 Mbps leased line — compliant</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Building completion certificate</div><div class="req-desc">Block D renewal pending with local body — AU requires this before granting affiliation</div></div><span class="badge ba">Pending</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">AICTE approval documents submitted with affiliation</div><div class="req-desc">AU now requires AICTE approvals along with infrastructure details in affiliation application</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Video-recorded inspection readiness</div><div class="req-desc">AU video-records infrastructure inspections. Labs confirmed ready for walk-through.</div></div><span class="badge bg">Ready</span></div>
+        </div>
+      </div>
+
+      <div class="criterion-card">
+        <div class="criterion-header" onclick="toggleCriterion(this)">
+          <div class="criterion-num" style="background:#fef9c3;color:#854d0e;">G</div>
+          <div class="criterion-title">Governance and IQAC</div>
+          <div class="criterion-weight">Critical</div>
+          <span class="badge ba" style="margin-right:8px;">64%</span>
+          <i class="ti ti-chevron-down" style="color:#888;"></i>
+        </div>
+        <div class="criterion-body">
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Governing body minutes — all meetings</div><div class="req-desc">Jan, Feb, Apr 2027 uploaded</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-miss"><i class="ti ti-x" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">IQAC minutes — all months</div><div class="req-desc">March 2027 IQAC minutes missing — critical for both AU and NAAC</div></div><span class="badge br">Missing</span></div>
+          <div class="req-item"><div class="req-check rc-done"><i class="ti ti-check" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Placement records (last 2 years)</div><div class="req-desc">2024-25 and 2025-26 placement records with offer letters uploaded</div></div><span class="badge bg">Done</span></div>
+          <div class="req-item"><div class="req-check rc-warn"><i class="ti ti-minus" style="font-size:10px"></i></div><div class="req-info"><div class="req-title">Student enrollment vs sanctioned intake — verified</div><div class="req-desc">AU cross-verifies actual enrollment against sanctioned intake figures</div></div><span class="badge ba">Verify</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ATTENDANCE -->
+  <div class="page" id="page-attendance">
+    <div class="day-grid">
+      <div class="day-card"><div class="day-card-title">Today's classes</div><div class="day-card-val">6</div><div class="day-card-sub">3 marked · 3 pending</div></div>
+      <div class="day-card"><div class="day-card-title">Dept avg attendance</div><div class="day-card-val c-amber">76%</div><div class="day-card-sub">Below 80% — needs attention</div></div>
+      <div class="day-card"><div class="day-card-title">Students at risk</div><div class="day-card-val c-red">18</div><div class="day-card-sub">Below 75% this semester</div></div>
+    </div>
+
+    <div class="alert alert-blue"><i class="ti ti-info-circle"></i><div>Click a student dot to toggle Present / Absent. Attendance auto-saves and updates the Anna University readiness tracker.</div></div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-header">
+        <div class="card-title">Monday 15 Jun 2026 — CSE Dept</div>
+        <select class="form-input" style="font-size:12px;padding:4px 8px;">
+          <option>CSE Department</option><option>ECE Department</option><option>Mech Department</option>
+        </select>
+      </div>
+
+      <!-- Class 1 — already marked -->
+      <div class="att-class-row">
+        <div style="flex-shrink:0;width:130px;">
+          <div class="att-class-name">CS3401 — Algorithms</div>
+          <div class="att-class-sub">9:00–10:00 AM · Dr. Kavitha</div>
+        </div>
+        <div class="att-dots" id="att1">
+          <!-- JS will render dots -->
+        </div>
+        <div class="att-pct" id="pct1">92%</div>
+        <span class="badge bg">Marked</span>
+      </div>
+
+      <!-- Class 2 — pending -->
+      <div class="att-class-row">
+        <div style="flex-shrink:0;width:130px;">
+          <div class="att-class-name">CS3402 — OS Concepts</div>
+          <div class="att-class-sub">10:00–11:00 AM · Ms. Deepa</div>
+        </div>
+        <div class="att-dots" id="att2"></div>
+        <div class="att-pct" id="pct2">—</div>
+        <button class="btn btn-primary att-save" onclick="saveAtt(2)">Save</button>
+      </div>
+
+      <!-- Class 3 — pending -->
+      <div class="att-class-row">
+        <div style="flex-shrink:0;width:130px;">
+          <div class="att-class-name">CS3403 — Networks</div>
+          <div class="att-class-sub">11:00–12:00 PM · Mr. Arun</div>
+        </div>
+        <div class="att-dots" id="att3"></div>
+        <div class="att-pct" id="pct3">—</div>
+        <button class="btn btn-primary att-save" onclick="saveAtt(3)">Save</button>
+      </div>
+
+      <div class="att-class-row" style="background:#fafafa;">
+        <div style="flex-shrink:0;width:130px;">
+          <div class="att-class-name" style="color:#888;">CS3404 — DBMS</div>
+          <div class="att-class-sub">2:00–3:00 PM · Mr. Vijay</div>
+        </div>
+        <div style="font-size:12px;color:#aaa;flex:1;">Afternoon — not yet started</div>
+        <span class="badge bgr">Upcoming</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-title">Students below 75% — needs parent notification</div></div>
+      <table>
+        <thead><tr><th>Roll No.</th><th>Name</th><th>Attendance %</th><th>Classes missed</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>20CS001</td><td><strong>Arjun K.</strong></td><td><span class="c-red">68%</span></td><td>16 of 50</td><td><button class="btn btn-sm" onclick="alert('Notification sent to parent.')">Notify parent</button></td></tr>
+          <tr><td>20CS018</td><td><strong>Preethi S.</strong></td><td><span class="c-red">71%</span></td><td>14 of 50</td><td><button class="btn btn-sm" onclick="alert('Notification sent to parent.')">Notify parent</button></td></tr>
+          <tr><td>20CS034</td><td><strong>Karthik R.</strong></td><td><span class="c-amber">74%</span></td><td>13 of 50</td><td><button class="btn btn-sm" onclick="alert('Notification sent to parent.')">Notify parent</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- LESSON PLAN LOG -->
+  <div class="page" id="page-lessonplan">
+    <div class="day-grid">
+      <div class="day-card"><div class="day-card-title">Syllabus on track</div><div class="day-card-val c-green">6</div><div class="day-card-sub">subjects at or ahead of plan</div></div>
+      <div class="day-card"><div class="day-card-title">Behind schedule</div><div class="day-card-val c-red">3</div><div class="day-card-sub">More than 1 unit behind</div></div>
+      <div class="day-card"><div class="day-card-title">This week</div><div class="day-card-val">Week 11</div><div class="day-card-sub">of 16 · Sem 4</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">CSE — Semester 4 syllabus tracker</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span style="font-size:11px;color:#888;">Each block = 1 unit</span>
+          <select class="form-input" style="font-size:12px;padding:4px 8px;"><option>CSE — Sem 4</option><option>ECE — Sem 4</option><option>Mech — Sem 4</option></select>
+        </div>
+      </div>
+      <div style="padding:4px 0;">
+
+        <div class="lp-row">
+          <div style="flex:1;">
+            <div class="lp-subject">CS3401 — Algorithms</div>
+            <div class="lp-staff">Dr. S. Kavitha · Target: Unit 4 by Week 11</div>
+          </div>
+          <div class="lp-units">
+            <div class="lp-unit lu-done" title="Unit 1 — Done">1</div>
+            <div class="lp-unit lu-done" title="Unit 2 — Done">2</div>
+            <div class="lp-unit lu-done" title="Unit 3 — Done">3</div>
+            <div class="lp-unit lu-cur" title="Unit 4 — In progress">4</div>
+            <div class="lp-unit lu-todo" title="Unit 5 — Pending">5</div>
+          </div>
+          <span class="badge bg" style="margin-left:10px;">On track</span>
+        </div>
+
+        <div class="lp-row">
+          <div style="flex:1;">
+            <div class="lp-subject">CS3402 — OS Concepts</div>
+            <div class="lp-staff">Ms. Deepa · Target: Unit 4 by Week 11</div>
+          </div>
+          <div class="lp-units">
+            <div class="lp-unit lu-done">1</div>
+            <div class="lp-unit lu-done">2</div>
+            <div class="lp-unit lu-done">3</div>
+            <div class="lp-unit lu-done">4</div>
+            <div class="lp-unit lu-cur">5</div>
+          </div>
+          <span class="badge bg" style="margin-left:10px;">Ahead</span>
+        </div>
+
+        <div class="lp-row">
+          <div style="flex:1;">
+            <div class="lp-subject">CS3403 — Computer Networks</div>
+            <div class="lp-staff">Mr. Arun · Target: Unit 4 by Week 11</div>
+          </div>
+          <div class="lp-units">
+            <div class="lp-unit lu-done">1</div>
+            <div class="lp-unit lu-done">2</div>
+            <div class="lp-unit lu-cur">3</div>
+            <div class="lp-unit lu-todo">4</div>
+            <div class="lp-unit lu-todo">5</div>
+          </div>
+          <span class="badge ba" style="margin-left:10px;">1 unit behind</span>
+        </div>
+
+        <div class="lp-row" style="background:#fff1f2;">
+          <div style="flex:1;">
+            <div class="lp-subject">CS3404 — Database Systems</div>
+            <div class="lp-staff">Mr. Vijay · Target: Unit 4 by Week 11</div>
+          </div>
+          <div class="lp-units">
+            <div class="lp-unit lu-done">1</div>
+            <div class="lp-unit lu-cur">2</div>
+            <div class="lp-unit lu-todo">3</div>
+            <div class="lp-unit lu-todo">4</div>
+            <div class="lp-unit lu-todo">5</div>
+          </div>
+          <span class="badge br" style="margin-left:10px;">2 units behind</span>
+        </div>
+
+        <div class="lp-row">
+          <div style="flex:1;">
+            <div class="lp-subject">CS3405 — Software Engineering</div>
+            <div class="lp-staff">Dr. Kavitha · Target: Unit 3 by Week 11</div>
+          </div>
+          <div class="lp-units">
+            <div class="lp-unit lu-done">1</div>
+            <div class="lp-unit lu-done">2</div>
+            <div class="lp-unit lu-done">3</div>
+            <div class="lp-unit lu-cur">4</div>
+            <div class="lp-unit lu-todo">5</div>
+          </div>
+          <span class="badge bg" style="margin-left:10px;">On track</span>
+        </div>
+
+      </div>
+      <div style="padding:12px 16px;border-top:0.5px solid rgba(0,0,0,0.08);display:flex;gap:10px;align-items:center;">
+        <i class="ti ti-info-circle" style="color:#888;"></i>
+        <span style="font-size:12px;color:#888;">Behind schedule subjects auto-flag in Anna University and NBA readiness trackers. HOD sees this in the HOD feed.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERNAL ASSESSMENT -->
+  <div class="page" id="page-iassess">
+    <div class="day-grid">
+      <div class="day-card"><div class="day-card-title">IA1 status</div><div class="day-card-val c-green">Done</div><div class="day-card-sub">All 42 subjects entered</div></div>
+      <div class="day-card"><div class="day-card-title">IA2 status</div><div class="day-card-val c-amber">Partial</div><div class="day-card-sub">38 of 42 subjects entered</div></div>
+      <div class="day-card"><div class="day-card-title">Below pass mark</div><div class="day-card-val c-red">34</div><div class="day-card-sub">Students in IA2 so far</div></div>
+    </div>
+
+    <div class="tab-row">
+      <div class="tab active" onclick="switchTab('ia1',this)">IA1 — Completed</div>
+      <div class="tab" onclick="switchTab('ia2',this)">IA2 — In progress</div>
+      <div class="tab" onclick="switchTab('co',this)">CO attainment</div>
+    </div>
+
+    <div id="tab-ia1">
+      <div class="card">
+        <div class="card-header"><div class="card-title">IA1 marks — CSE Sem 4</div><div style="font-size:12px;color:#888;">Max: 50 marks · Pass: 25</div></div>
+        <table class="ia-table">
+          <thead><tr><th>Roll No.</th><th>Name</th><th>CS3401</th><th>CS3402</th><th>CS3403</th><th>CS3404</th><th>CS3405</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>20CS001</td><td><strong>Arjun K.</strong></td><td>38</td><td>42</td><td>31</td><td>28</td><td>44</td><td><span class="badge bg">Pass</span></td></tr>
+            <tr><td>20CS002</td><td><strong>Bhavya M.</strong></td><td>44</td><td>46</td><td>39</td><td>41</td><td>48</td><td><span class="badge bg">Pass</span></td></tr>
+            <tr><td>20CS003</td><td><strong>Dinesh P.</strong></td><td>22</td><td>18</td><td>31</td><td>24</td><td>29</td><td><span class="badge br">Fail</span></td></tr>
+            <tr><td>20CS004</td><td><strong>Esha R.</strong></td><td>41</td><td>38</td><td>44</td><td>36</td><td>42</td><td><span class="badge bg">Pass</span></td></tr>
+            <tr><td>20CS005</td><td><strong>Faizal A.</strong></td><td>19</td><td>26</td><td>22</td><td>31</td><td>24</td><td><span class="badge br">Fail</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="tab-ia2" style="display:none;">
+      <div class="alert alert-amber"><i class="ti ti-alert-triangle"></i><div>4 subjects still pending IA2 entry. These are flagged in NAAC C5 and Anna University academic records.</div></div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Enter IA2 marks — CS3404 Database Systems</div><div style="font-size:12px;color:#888;">Max: 50 · Mr. Vijay</div></div>
+        <table class="ia-table">
+          <thead><tr><th>Roll No.</th><th>Name</th><th>IA2 Marks</th><th>IA1 Marks</th><th>Trend</th></tr></thead>
+          <tbody>
+            <tr><td>20CS001</td><td><strong>Arjun K.</strong></td><td><input class="ia-input" type="number" min="0" max="50" placeholder="—" onchange="updateTrend(this)"></td><td>28</td><td id="trend1" style="color:#888;font-size:12px;">—</td></tr>
+            <tr><td>20CS002</td><td><strong>Bhavya M.</strong></td><td><input class="ia-input" type="number" min="0" max="50" placeholder="—" onchange="updateTrend(this)"></td><td>41</td><td id="trend2" style="color:#888;font-size:12px;">—</td></tr>
+            <tr><td>20CS003</td><td><strong>Dinesh P.</strong></td><td><input class="ia-input" type="number" min="0" max="50" placeholder="—" onchange="updateTrend(this)"></td><td>24</td><td id="trend3" style="color:#888;font-size:12px;">—</td></tr>
+            <tr><td>20CS004</td><td><strong>Esha R.</strong></td><td><input class="ia-input" type="number" min="0" max="50" placeholder="—" onchange="updateTrend(this)"></td><td>36</td><td id="trend4" style="color:#888;font-size:12px;">—</td></tr>
+          </tbody>
+        </table>
+        <div style="padding:12px 16px;border-top:0.5px solid rgba(0,0,0,0.08);display:flex;justify-content:flex-end;gap:8px;">
+          <button class="btn" onclick="alert('Draft saved.')">Save draft</button>
+          <button class="btn btn-primary" onclick="alert('Marks submitted! CO attainment will auto-calculate for CS3404.')">Submit &amp; calculate CO attainment</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-co" style="display:none;">
+      <div class="alert alert-blue"><i class="ti ti-info-circle"></i><div>CO attainment auto-calculates once both IA marks and end-semester results are entered. Target: ≥60% students achieving ≥60% in each CO.</div></div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">CO attainment — CS3401 Algorithms (auto-calculated)</div></div>
+        <table>
+          <thead><tr><th>Course Outcome</th><th>Target %</th><th>Direct attainment</th><th>Indirect (survey)</th><th>Overall</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>CO1 — Analyse algorithm complexity</td><td>60%</td><td>74%</td><td>68%</td><td><strong>72%</strong></td><td><span class="badge bg">Achieved</span></td></tr>
+            <tr><td>CO2 — Apply divide and conquer</td><td>60%</td><td>61%</td><td>65%</td><td><strong>62%</strong></td><td><span class="badge bg">Achieved</span></td></tr>
+            <tr><td>CO3 — Design greedy algorithms</td><td>60%</td><td>52%</td><td>58%</td><td><strong>54%</strong></td><td><span class="badge br">Not achieved</span></td></tr>
+            <tr><td>CO4 — Implement graph algorithms</td><td>60%</td><td>68%</td><td>71%</td><td><strong>69%</strong></td><td><span class="badge bg">Achieved</span></td></tr>
+            <tr><td>CO5 — Compare NP problems</td><td>60%</td><td>44%</td><td>49%</td><td><strong>46%</strong></td><td><span class="badge br">Not achieved</span></td></tr>
+          </tbody>
+        </table>
+        <div style="padding:12px 16px;border-top:0.5px solid rgba(0,0,0,0.08);background:#fff1f2;">
+          <div style="font-size:12px;color:#991b1b;font-weight:500;margin-bottom:4px;"><i class="ti ti-alert-circle"></i> CO3 and CO5 not achieved — NBA C3 requires corrective action to be documented</div>
+          <div style="font-size:12px;color:#64748b;">Suggested action: Add extra tutorial sessions on greedy algorithms and NP completeness in Sem 5. Document this as corrective action for NBA SAR 2025.</div>
+          <button class="btn btn-sm" style="margin-top:8px;" onclick="alert('Corrective action logged and linked to NBA C3 — Continuous Improvement tracker.')">Log corrective action for NBA</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOD FEED -->
+  <div class="page" id="page-hodfeed">
+    <div class="day-grid">
+      <div class="day-card"><div class="day-card-title">Pending from faculty</div><div class="day-card-val c-red">7</div><div class="day-card-sub">items need action today</div></div>
+      <div class="day-card"><div class="day-card-title">Reminders sent today</div><div class="day-card-val">4</div><div class="day-card-sub">Auto-sent by Accredify</div></div>
+      <div class="day-card"><div class="day-card-title">Resolved this week</div><div class="day-card-val c-green">11</div><div class="day-card-sub">items closed by faculty</div></div>
+    </div>
+
+    <div class="two-col">
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-header">
+          <div class="card-title">Faculty pending actions</div>
+          <button class="btn btn-sm btn-primary" onclick="pingAll()"><i class="ti ti-bell"></i> Ping all</button>
+        </div>
+        <div id="pend-list">
+          <div class="pend-row">
+            <div style="flex:1;">
+              <div class="pend-name"><strong>Mr. Ramesh Kumar</strong></div>
+              <div class="pend-dept">Mech Dept · Asst. Professor</div>
+              <div class="pend-tags" style="margin-top:4px;">
+                <span class="badge br">PG cert missing</span>
+                <span class="badge ba">FDP: 24 hrs</span>
+              </div>
+            </div>
+            <button class="ping-btn" id="ping-1" onclick="pingFaculty(1,'Ramesh Kumar')">Ping</button>
+          </div>
+          <div class="pend-row">
+            <div style="flex:1;">
+              <div class="pend-name"><strong>Ms. Priya S.</strong></div>
+              <div class="pend-dept">EEE Dept · Asst. Professor</div>
+              <div class="pend-tags" style="margin-top:4px;">
+                <span class="badge br">PG cert missing</span>
+                <span class="badge ba">FDP: 18 hrs</span>
+              </div>
+            </div>
+            <button class="ping-btn" id="ping-2" onclick="pingFaculty(2,'Priya S.')">Ping</button>
+          </div>
+          <div class="pend-row">
+            <div style="flex:1;">
+              <div class="pend-name"><strong>Mr. Vijay R.</strong></div>
+              <div class="pend-dept">CSE Dept · Asst. Professor</div>
+              <div class="pend-tags" style="margin-top:4px;">
+                <span class="badge br">Lesson plan missing</span>
+                <span class="badge br">IA2 not entered</span>
+              </div>
+            </div>
+            <button class="ping-btn" id="ping-3" onclick="pingFaculty(3,'Vijay R.')">Ping</button>
+          </div>
+          <div class="pend-row">
+            <div style="flex:1;">
+              <div class="pend-name"><strong>Mr. J. Suresh</strong></div>
+              <div class="pend-dept">ECE Dept · Asst. Professor</div>
+              <div class="pend-tags" style="margin-top:4px;">
+                <span class="badge ba">Experience cert pending</span>
+                <span class="badge ba">FDP: 36 hrs</span>
+              </div>
+            </div>
+            <button class="ping-btn" id="ping-4" onclick="pingFaculty(4,'J. Suresh')">Ping</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-header"><div class="card-title">Live department feed</div></div>
+        <div class="update-feed">
+          <div class="feed-item">
+            <div class="feed-avatar" style="background:#16a34a;">SK</div>
+            <div class="feed-content">
+              <div class="feed-name">Dr. S. Kavitha</div>
+              <div class="feed-action">Marked attendance for CS3401 · 92% present</div>
+              <div class="feed-time">Today, 9:08 AM</div>
+            </div>
+            <span class="badge bg feed-badge">Done</span>
+          </div>
+          <div class="feed-item">
+            <div class="feed-avatar" style="background:#1d4ed8;">MA</div>
+            <div class="feed-content">
+              <div class="feed-name">Mr. K. Arun</div>
+              <div class="feed-action">Updated syllabus — CS3403 Unit 3 in progress</div>
+              <div class="feed-time">Today, 8:45 AM</div>
+            </div>
+            <span class="badge bb feed-badge">Update</span>
+          </div>
+          <div class="feed-item">
+            <div class="feed-avatar" style="background:#f59e0b;">PM</div>
+            <div class="feed-content">
+              <div class="feed-name">Dr. P. Meenakshi</div>
+              <div class="feed-action">FDP certificate uploaded — 45 hrs logged</div>
+              <div class="feed-time">Yesterday, 4:32 PM</div>
+            </div>
+            <span class="badge bg feed-badge">Done</span>
+          </div>
+          <div class="feed-item">
+            <div class="feed-avatar" style="background:#dc2626;">VR</div>
+            <div class="feed-content">
+              <div class="feed-name">Mr. Vijay R.</div>
+              <div class="feed-action">Lesson plan for CS3404 still not uploaded</div>
+              <div class="feed-time">Auto-flagged · 3 days overdue</div>
+            </div>
+            <span class="badge br feed-badge">Overdue</span>
+          </div>
+          <div class="feed-item">
+            <div class="feed-avatar" style="background:#6366f1;">RS</div>
+            <div class="feed-content">
+              <div class="feed-name">Dr. R. Selvam</div>
+              <div class="feed-action">Submitted Scopus paper link — ECE publications updated</div>
+              <div class="feed-time">Yesterday, 11:20 AM</div>
+            </div>
+            <span class="badge" style="background:#ede9fe;color:#5b21b6;">Research</span>
+          </div>
+          <div class="feed-item">
+            <div class="feed-avatar" style="background:#0369a1;">JS</div>
+            <div class="feed-content">
+              <div class="feed-name">Mr. J. Suresh</div>
+              <div class="feed-action">Accredify reminder sent — experience cert still pending</div>
+              <div class="feed-time">Auto-reminder · 9:00 AM today</div>
+            </div>
+            <span class="badge ba">Reminded</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FACULTY -->
+  <div class="page" id="page-faculty">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Total faculty</div><div class="stat-value">84</div><div class="stat-sub">Across 5 departments</div></div>
+      <div class="stat-card"><div class="stat-label">PhD holders</div><div class="stat-value">24 <span style="font-size:14px;font-weight:400;color:#888;">/84</span></div><div class="stat-sub c-amber">28% - AICTE norm: 30%</div></div>
+      <div class="stat-card"><div class="stat-label">FDP completed</div><div class="stat-value">61</div><div class="stat-sub c-amber">23 staff below 40hrs/yr</div></div>
+      <div class="stat-card"><div class="stat-label">Records complete</div><div class="stat-value c-green">82</div><div class="stat-sub c-red">2 profiles incomplete</div></div>
+    </div>
+    <div class="alert alert-red"><i class="ti ti-alert-circle"></i><div><strong>Action needed:</strong> Mr. Ramesh Kumar (Mech) and Ms. Priya S. (EEE) have missing PG certificate uploads. Flagged as non-compliant in NAAC C2, AICTE, and Anna University checklists.</div></div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Faculty register</div>
+        <div style="display:flex;gap:8px;">
+          <select class="form-input" style="font-size:12px;padding:4px 8px;"><option>All departments</option><option>Computer Science</option><option>Electronics</option><option>Mechanical</option></select>
+          <button class="btn btn-primary btn-sm" onclick="alert('In the full product, this opens an Add Faculty form.')"><i class="ti ti-plus"></i> Add faculty</button>
+        </div>
+      </div>
+      <table>
+        <thead><tr><th>Name</th><th>Dept</th><th>Designation</th><th>Qualification</th><th>FDP hrs</th><th>Publications</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Dr. S. Kavitha</strong></td><td>CSE</td><td>Associate Professor</td><td><span class="badge bb">PhD</span></td><td>52h</td><td>7</td><td><span class="badge bg">Complete</span></td></tr>
+          <tr><td><strong>Mr. K. Arun</strong></td><td>CSE</td><td>Assistant Professor</td><td><span class="badge bgr">M.E.</span></td><td>40h</td><td>2</td><td><span class="badge bg">Complete</span></td></tr>
+          <tr><td><strong>Dr. R. Selvam</strong></td><td>ECE</td><td>Professor and HOD</td><td><span class="badge bb">PhD</span></td><td>68h</td><td>14</td><td><span class="badge bg">Complete</span></td></tr>
+          <tr><td><strong>Ms. Priya S.</strong></td><td>EEE</td><td>Assistant Professor</td><td><span class="badge bgr">M.E.</span></td><td>18h</td><td>0</td><td><span class="badge br">Incomplete</span></td></tr>
+          <tr><td><strong>Mr. Ramesh Kumar</strong></td><td>Mech</td><td>Assistant Professor</td><td><span class="badge bgr">M.E.</span></td><td>24h</td><td>1</td><td><span class="badge br">Incomplete</span></td></tr>
+          <tr><td><strong>Dr. P. Meenakshi</strong></td><td>Civil</td><td>Associate Professor</td><td><span class="badge bb">PhD</span></td><td>45h</td><td>5</td><td><span class="badge bg">Complete</span></td></tr>
+          <tr><td><strong>Mr. J. Suresh</strong></td><td>ECE</td><td>Assistant Professor</td><td><span class="badge bgr">M.Tech</span></td><td>36h</td><td>1</td><td><span class="badge ba">Pending doc</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SYLLABUS -->
+  <div class="page" id="page-syllabus">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Overall completion</div><div class="stat-value">71<span style="font-size:14px">%</span></div><div class="stat-sub">Semester 4, Week 11 of 16</div></div>
+      <div class="stat-card"><div class="stat-label">Units behind</div><div class="stat-value c-red">8</div><div class="stat-sub">Across 3 departments</div></div>
+      <div class="stat-card"><div class="stat-label">CO-PO mapped</div><div class="stat-value">38 <span style="font-size:14px;font-weight:400;color:#888;">/42</span></div><div class="stat-sub c-amber">4 subjects pending</div></div>
+      <div class="stat-card"><div class="stat-label">Lesson plans uploaded</div><div class="stat-value c-green">39</div><div class="stat-sub">3 missing</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Syllabus completion by subject</div>
+        <select class="form-input" style="font-size:12px;padding:4px 8px;"><option>CSE - Sem 4</option><option>ECE - Sem 4</option><option>Mech - Sem 4</option></select>
+      </div>
+      <table>
+        <thead><tr><th>Subject</th><th>Staff</th><th>Units done</th><th>% Complete</th><th>CO-PO</th><th>Lesson plan</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Data Structures</strong></td><td>Dr. Kavitha</td><td>3/5</td><td><div class="progress-bar" style="width:100px;display:inline-block;vertical-align:middle;margin-right:6px;"><div class="pf pa" style="width:60%"></div></div>60%</td><td><span class="badge bg">Mapped</span></td><td><span class="badge bg">Uploaded</span></td></tr>
+          <tr><td><strong>Computer Networks</strong></td><td>Mr. Arun</td><td>4/5</td><td><div class="progress-bar" style="width:100px;display:inline-block;vertical-align:middle;margin-right:6px;"><div class="pf pg" style="width:80%"></div></div>80%</td><td><span class="badge bg">Mapped</span></td><td><span class="badge bg">Uploaded</span></td></tr>
+          <tr><td><strong>OS Concepts</strong></td><td>Ms. Deepa</td><td>5/5</td><td><div class="progress-bar" style="width:100px;display:inline-block;vertical-align:middle;margin-right:6px;"><div class="pf pg" style="width:100%"></div></div>100%</td><td><span class="badge bg">Mapped</span></td><td><span class="badge bg">Uploaded</span></td></tr>
+          <tr><td><strong>Database Systems</strong></td><td>Mr. Vijay</td><td>2/5</td><td><div class="progress-bar" style="width:100px;display:inline-block;vertical-align:middle;margin-right:6px;"><div class="pf pr" style="width:40%"></div></div>40%</td><td><span class="badge br">Pending</span></td><td><span class="badge br">Missing</span></td></tr>
+          <tr><td><strong>Software Engg.</strong></td><td>Dr. Kavitha</td><td>3/5</td><td><div class="progress-bar" style="width:100px;display:inline-block;vertical-align:middle;margin-right:6px;"><div class="pf pa" style="width:60%"></div></div>60%</td><td><span class="badge ba">In progress</span></td><td><span class="badge bg">Uploaded</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- STUDENTS -->
+  <div class="page" id="page-students">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Total students</div><div class="stat-value">1,842</div><div class="stat-sub">UG - 4 years</div></div>
+      <div class="stat-card"><div class="stat-label">Avg attendance</div><div class="stat-value c-amber">78%</div><div class="stat-sub">Below 80% AICTE norm</div></div>
+      <div class="stat-card"><div class="stat-label">Below 75% attendance</div><div class="stat-value c-red">124</div><div class="stat-sub">Need intervention</div></div>
+      <div class="stat-card"><div class="stat-label">Pass % (internal)</div><div class="stat-value c-green">84%</div><div class="stat-sub">Sem 4 - IA1 + IA2</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Attendance summary by class</div></div>
+      <table>
+        <thead><tr><th>Section</th><th>Department</th><th>Year</th><th>Strength</th><th>Avg attendance</th><th>Below 75%</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><strong>CSE-A</strong></td><td>Computer Science</td><td>II</td><td>60</td><td>83%</td><td>5</td><td><span class="badge bg">Good</span></td></tr>
+          <tr><td><strong>CSE-B</strong></td><td>Computer Science</td><td>II</td><td>60</td><td>79%</td><td>11</td><td><span class="badge ba">Watch</span></td></tr>
+          <tr><td><strong>ECE-A</strong></td><td>Electronics</td><td>III</td><td>58</td><td>85%</td><td>3</td><td><span class="badge bg">Good</span></td></tr>
+          <tr><td><strong>Mech-A</strong></td><td>Mechanical</td><td>II</td><td>55</td><td>71%</td><td>18</td><td><span class="badge br">Alert</span></td></tr>
+          <tr><td><strong>Civil-A</strong></td><td>Civil Engg.</td><td>III</td><td>48</td><td>76%</td><td>9</td><td><span class="badge ba">Watch</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- INFRA -->
+  <div class="page" id="page-infra">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Labs</div><div class="stat-value">18</div><div class="stat-sub c-green">All operational</div></div>
+      <div class="stat-card"><div class="stat-label">Equipment items</div><div class="stat-value">1,247</div><div class="stat-sub c-amber">34 missing serial no.</div></div>
+      <div class="stat-card"><div class="stat-label">Library books</div><div class="stat-value">24,810</div><div class="stat-sub c-green">Catalogue updated</div></div>
+      <div class="stat-card"><div class="stat-label">Classrooms</div><div class="stat-value">42</div><div class="stat-sub">2 under maintenance</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Lab equipment register</div>
+        <button class="btn btn-sm" onclick="alert('In the full product, this opens a form to add equipment.')"><i class="ti ti-plus"></i> Add item</button>
+      </div>
+      <table>
+        <thead><tr><th>Equipment</th><th>Lab</th><th>Qty</th><th>Serial no.</th><th>Purchase year</th><th>Condition</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Oscilloscope (20MHz)</strong></td><td>ECE Lab 1</td><td>12</td><td><span class="badge bg">Logged</span></td><td>2021</td><td><span class="badge bg">Good</span></td></tr>
+          <tr><td><strong>CNC Milling Machine</strong></td><td>Mech Lab</td><td>2</td><td><span class="badge br">Missing</span></td><td>2019</td><td><span class="badge ba">Fair</span></td></tr>
+          <tr><td><strong>Network switch (48-port)</strong></td><td>CSE Lab 2</td><td>4</td><td><span class="badge bg">Logged</span></td><td>2023</td><td><span class="badge bg">Good</span></td></tr>
+          <tr><td><strong>Digital multimeters</strong></td><td>EEE Lab</td><td>30</td><td><span class="badge br">Missing</span></td><td>2018</td><td><span class="badge ba">Fair</span></td></tr>
+          <tr><td><strong>Total station (survey)</strong></td><td>Civil Lab</td><td>3</td><td><span class="badge bg">Logged</span></td><td>2022</td><td><span class="badge bg">Good</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- REPORTS -->
+  <div class="page" id="page-reports">
+    <div class="alert alert-blue"><i class="ti ti-info-circle"></i><div>Reports are auto-generated from your live records. Select an inspection body and generate - no manual compiling needed.</div></div>
+    <div class="report-card" onclick="alert('Generating NAAC SSR Data Export...\nIn the full product this downloads as a formatted PDF instantly.')">
+      <div class="ri ri-purple"><i class="ti ti-award" style="font-size:18px"></i></div>
+      <div class="report-info"><div class="report-name">NAAC - SSR data export (all 7 criteria)</div><div class="report-desc">Criterion-wise data with supporting evidence links - Binary Accreditation 2025 format</div></div>
+      <button class="btn btn-sm" onclick="event.stopPropagation();alert('Generating...')"><i class="ti ti-download"></i> Generate</button>
+    </div>
+    <div class="report-card" onclick="alert('Generating AICTE Annual Compliance Report...\nIn the full product this downloads as a formatted PDF instantly.')">
+      <div class="ri ri-blue"><i class="ti ti-license" style="font-size:18px"></i></div>
+      <div class="report-info"><div class="report-name">AICTE - Faculty and infrastructure compliance report</div><div class="report-desc">Faculty list, FSR, FDP hours, infrastructure checklist - APH 2024-27 format</div></div>
+      <button class="btn btn-sm" onclick="event.stopPropagation();alert('Generating...')"><i class="ti ti-download"></i> Generate</button>
+    </div>
+    <div class="report-card" onclick="alert('Generating NBA SAR 2025 data pack...\nIn the full product this downloads as a formatted PDF instantly.')">
+      <div class="ri ri-green"><i class="ti ti-rosette" style="font-size:18px"></i></div>
+      <div class="report-info"><div class="report-name">NBA - SAR 2025 data pack (10 criteria)</div><div class="report-desc">CO-PO attainment, faculty cadre ratio, student performance indices - Tier-II affiliated format</div></div>
+      <button class="btn btn-sm" onclick="event.stopPropagation();alert('Generating...')"><i class="ti ti-download"></i> Generate</button>
+    </div>
+    <div class="report-card" onclick="alert('Generating Anna University Affiliation Report...\nIn the full product this downloads as a formatted PDF instantly.')">
+      <div class="ri ri-amber"><i class="ti ti-building-community" style="font-size:18px"></i></div>
+      <div class="report-info"><div class="report-name">Anna University - Affiliation inspection report</div><div class="report-desc">Faculty register, attendance, marks, lab equipment, IQAC - inspection-ready format</div></div>
+      <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();alert('Generating...')"><i class="ti ti-download"></i> Generate</button>
+    </div>
+    <div class="report-card" onclick="alert('Generating Full Readiness Report across all 4 bodies...\nIn the full product this downloads as a formatted PDF.')">
+      <div class="ri ri-blue"><i class="ti ti-file-report" style="font-size:18px"></i></div>
+      <div class="report-info"><div class="report-name">Full readiness report - all 4 inspection bodies</div><div class="report-desc">Consolidated gap analysis across NAAC, AICTE, NBA, and Anna University - share with Principal</div></div>
+      <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();alert('Generating...')"><i class="ti ti-download"></i> Generate</button>
+    </div>
+  </div>
+
+  <!-- VAULT -->
+  <div class="page" id="page-vault">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Total documents</div><div class="stat-value">284</div><div class="stat-sub">Across all categories</div></div>
+      <div class="stat-card"><div class="stat-label">Uploaded this month</div><div class="stat-value">31</div><div class="stat-sub c-green">+12 from last month</div></div>
+      <div class="stat-card"><div class="stat-label">Storage used</div><div class="stat-value">1.8<span style="font-size:14px">GB</span></div><div class="stat-sub">of 10GB</div></div>
+      <div class="stat-card"><div class="stat-label">Expiring soon</div><div class="stat-value c-amber">3</div><div class="stat-sub">Certificates expiring in 60 days</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Documents</div>
+        <div style="display:flex;gap:8px;">
+          <select class="form-input" style="font-size:12px;padding:4px 8px;"><option>All categories</option><option>Faculty certificates</option><option>Infrastructure</option><option>IQAC</option></select>
+          <button class="btn btn-primary btn-sm" onclick="alert('In the full product, this opens a file upload dialog.')"><i class="ti ti-upload"></i> Upload</button>
+        </div>
+      </div>
+      <table>
+        <thead><tr><th>Document</th><th>Category</th><th>Uploaded by</th><th>Date</th><th>Linked to</th><th></th></tr></thead>
+        <tbody>
+          <tr><td><i class="ti ti-file-text" style="color:#3b82f6;margin-right:6px"></i><strong>PhD Certificate - Dr. Kavitha</strong></td><td><span class="badge bb">Faculty</span></td><td>Admin</td><td>14 Jul 2026</td><td>Dr. S. Kavitha, CSE</td><td><button class="btn" style="font-size:11px;padding:3px 8px;" onclick="alert('Preview opens in full product.')"><i class="ti ti-eye"></i></button></td></tr>
+          <tr><td><i class="ti ti-file-text" style="color:#22c55e;margin-right:6px"></i><strong>IQAC Minutes - April 2027</strong></td><td><span class="badge bg">IQAC</span></td><td>Principal office</td><td>5 May 2026</td><td>IQAC Committee</td><td><button class="btn" style="font-size:11px;padding:3px 8px;" onclick="alert('Preview opens in full product.')"><i class="ti ti-eye"></i></button></td></tr>
+          <tr><td><i class="ti ti-file-text" style="color:#f59e0b;margin-right:6px"></i><strong>Lab equipment invoice - CSE</strong></td><td><span class="badge ba">Infrastructure</span></td><td>HOD CSE</td><td>2 Mar 2026</td><td>CSE Lab 2</td><td><button class="btn" style="font-size:11px;padding:3px 8px;" onclick="alert('Preview opens in full product.')"><i class="ti ti-eye"></i></button></td></tr>
+          <tr><td><i class="ti ti-file-text" style="color:#a855f7;margin-right:6px"></i><strong>AQAR 2025-26</strong></td><td><span class="badge bgr">NAAC</span></td><td>IQAC Coordinator</td><td>15 Jan 2026</td><td>NAAC submission</td><td><button class="btn" style="font-size:11px;padding:3px 8px;" onclick="alert('Preview opens in full product.')"><i class="ti ti-eye"></i></button></td></tr>
+          <tr><td><i class="ti ti-file-text" style="color:#3b82f6;margin-right:6px"></i><strong>Placement records 2024-25</strong></td><td><span class="badge bb">Placements</span></td><td>T&amp;P cell</td><td>20 Dec 2025</td><td>All departments</td><td><button class="btn" style="font-size:11px;padding:3px 8px;" onclick="alert('Preview opens in full product.')"><i class="ti ti-eye"></i></button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+</div>
+<script>
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+  const titles = { dashboard:'Dashboard', inspect:'Inspection Readiness', faculty:'Faculty Records', syllabus:'Syllabus Tracking', students:'Student Records', infra:'Infrastructure', reports:'Generate Reports', vault:'Document Vault', attendance:'Mark Attendance', lessonplan:'Lesson Plan Log', iassess:'Internal Assessment Marks', hodfeed:'HOD Feed' };
+  document.getElementById('topbar-title').textContent = titles[id] || id;
+}
+function selectBody(body) {
+  ['naac','aicte','nba','anna'].forEach(b => {
+    document.getElementById('bc-'+b).classList.remove('selected');
+    document.getElementById('panel-'+b).classList.remove('active');
+  });
+  document.getElementById('bc-'+body).classList.add('selected');
+  document.getElementById('panel-'+body).classList.add('active');
+}
+function switchTab(tab, el) {
+  ['ia1','ia2','co'].forEach(t => {
+    var el2 = document.getElementById('tab-'+t);
+    if(el2) el2.style.display = 'none';
+  });
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  var show = document.getElementById('tab-'+tab);
+  if(show) show.style.display = 'block';
+  if(el) el.classList.add('active');
+}
+
+function pingFaculty(n, name) {
+  var btn = document.getElementById('ping-'+n);
+  if(!btn || btn.classList.contains('sent')) return;
+  btn.textContent = 'Sent ✓';
+  btn.classList.add('sent');
+  btn.disabled = true;
+}
+
+function pingAll() {
+  [1,2,3,4].forEach(n => {
+    var btn = document.getElementById('ping-'+n);
+    if(btn && !btn.classList.contains('sent')) {
+      btn.textContent = 'Sent ✓';
+      btn.classList.add('sent');
+      btn.disabled = true;
+    }
+  });
+}
+
+function saveAtt(n) {
+  var dots = document.querySelectorAll('#att'+n+' .att-dot');
+  var present = 0;
+  dots.forEach(d => { if(d.classList.contains('att-p')) present++; });
+  var pct = dots.length ? Math.round(present/dots.length*100) : 0;
+  document.getElementById('pct'+n).textContent = pct+'%';
+  document.getElementById('pct'+n).style.color = pct < 75 ? '#b91c1c' : '#15803d';
+  var btn = document.querySelector('#att'+n).parentElement.querySelector('.att-save');
+  if(btn) { btn.textContent = 'Saved ✓'; btn.disabled = true; btn.style.opacity='0.5'; }
+}
+
+function updateTrend(input) {
+  var row = input.closest('tr');
+  var ia1 = parseInt(row.cells[3].textContent) || 0;
+  var ia2 = parseInt(input.value) || 0;
+  var idx = Array.from(row.parentElement.children).indexOf(row) + 1;
+  var td = document.getElementById('trend'+idx);
+  if(!td) return;
+  if(ia2 > ia1) { td.textContent = '▲ Improved'; td.style.color = '#16a34a'; }
+  else if(ia2 < ia1) { td.textContent = '▼ Dropped'; td.style.color = '#dc2626'; }
+  else { td.textContent = '→ Same'; td.style.color = '#888'; }
+}
+
+// Build attendance dots
+function buildAttDots(id, total, presentCount, interactive) {
+  var container = document.getElementById(id);
+  if(!container) return;
+  for(var i=0;i<total;i++){
+    var d = document.createElement('div');
+    d.className = 'att-dot ' + (i < presentCount ? 'att-p' : 'att-a');
+    d.textContent = (i+1);
+    if(interactive) {
+      d.onclick = (function(el){return function(){
+        if(el.classList.contains('att-p')){ el.classList.remove('att-p'); el.classList.add('att-a'); }
+        else { el.classList.remove('att-a'); el.classList.add('att-p'); }
+      }})(d);
+    }
+    container.appendChild(d);
+  }
+}
+buildAttDots('att1', 12, 11, false);
+buildAttDots('att2', 12, 9, true);
+buildAttDots('att3', 12, 10, true);
+
+function toggleCriterion(header) {
+  const body = header.nextElementSibling;
+  const icon = header.querySelector('i.ti-chevron-down, i.ti-chevron-up');
+  if (body.classList.contains('open')) {
+    body.classList.remove('open');
+    if (icon) { icon.classList.remove('ti-chevron-up'); icon.classList.add('ti-chevron-down'); }
+  } else {
+    body.classList.add('open');
+    if (icon) { icon.classList.remove('ti-chevron-down'); icon.classList.add('ti-chevron-up'); }
+  }
+}
+</script>
+</body>
+</html>

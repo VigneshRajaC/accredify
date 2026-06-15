@@ -1,0 +1,26 @@
+{
+  "name": "accredify",
+  "version": "0.1.0",
+  "description": "College inspection readiness platform for Tamil Nadu engineering colleges. Tracks NAAC, AICTE, NBA, and Anna University requirements — and makes daily academic work the compliance engine.",
+  "private": true,
+  "scripts": {
+    "dev": "npx serve src/",
+    "start": "npx serve src/"
+  },
+  "keywords": [
+    "naac",
+    "aicte",
+    "nba",
+    "anna-university",
+    "accreditation",
+    "tamil-nadu",
+    "engineering-college",
+    "saas",
+    "edtech"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.0.0"
+  }
+}
