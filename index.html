@@ -119,6 +119,63 @@ tr:hover td { background: #fafaf8; }
 .report-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
 .report-desc { font-size: 12px; color: #888; }
 .form-input { padding: 6px 10px; border: 0.5px solid rgba(0,0,0,0.2); border-radius: 6px; font-size: 13px; background: #fff; color: #1a1a1a; outline: none; }
+
+/* ── DAILY USE ADDITIONS ─────────────────────────────────── */
+.day-grid { display: grid; grid-template-columns: repeat(3,1fr); gap:12px; margin-bottom:20px; }
+.day-card { background:#fff; border:0.5px solid rgba(0,0,0,0.1); border-radius:10px; padding:14px 16px; }
+.day-card-title { font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:#888; margin-bottom:6px; }
+.day-card-val { font-size:22px; font-weight:600; }
+.day-card-sub { font-size:11px; color:#888; margin-top:3px; }
+.att-class-row { display:flex; align-items:center; gap:10px; padding:10px 12px; border-bottom:0.5px solid rgba(0,0,0,0.06); }
+.att-class-row:last-child { border-bottom:none; }
+.att-class-name { font-size:13px; font-weight:500; width:130px; flex-shrink:0; }
+.att-class-sub { font-size:11px; color:#888; }
+.att-dots { display:flex; gap:3px; flex:1; flex-wrap:wrap; }
+.att-dot { width:20px; height:20px; border-radius:50%; font-size:9px; font-weight:600; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; }
+.att-p { background:#dcfce7; color:#166534; }
+.att-a { background:#fee2e2; color:#991b1b; }
+.att-u { background:#f3f4f6; color:#9ca3af; }
+.att-pct { font-size:12px; font-weight:600; width:36px; text-align:right; }
+.att-save { font-size:11px; padding:3px 10px; }
+.lp-row { display:flex; align-items:center; gap:10px; padding:10px 12px; border-bottom:0.5px solid rgba(0,0,0,0.06); }
+.lp-row:last-child { border-bottom:none; }
+.lp-subject { font-size:13px; font-weight:500; flex:1; }
+.lp-staff { font-size:11px; color:#888; }
+.lp-units { display:flex; gap:3px; }
+.lp-unit { width:18px; height:18px; border-radius:4px; font-size:9px; font-weight:600; display:flex; align-items:center; justify-content:center; }
+.lu-done { background:#dcfce7; color:#166534; }
+.lu-cur { background:#dbeafe; color:#1e40af; }
+.lu-todo { background:#f3f4f6; color:#9ca3af; }
+.update-feed { display:flex; flex-direction:column; gap:0; }
+.feed-item { display:flex; gap:12px; padding:11px 16px; border-bottom:0.5px solid rgba(0,0,0,0.06); align-items:flex-start; }
+.feed-item:last-child { border-bottom:none; }
+.feed-avatar { width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; flex-shrink:0; color:#fff; }
+.feed-content { flex:1; }
+.feed-name { font-size:13px; font-weight:500; }
+.feed-action { font-size:12px; color:#64748b; margin-top:1px; }
+.feed-time { font-size:11px; color:#aaa; margin-top:2px; }
+.feed-badge { flex-shrink:0; }
+.feed-done { background:#22c55e; }
+.feed-warn { background:#f59e0b; }
+.feed-miss { background:#6366f1; }
+.pend-row { display:flex; align-items:center; gap:10px; padding:10px 12px; border-bottom:0.5px solid rgba(0,0,0,0.06); }
+.pend-row:last-child { border-bottom:none; }
+.pend-name { flex:1; font-size:13px; }
+.pend-dept { font-size:11px; color:#888; }
+.pend-tags { display:flex; gap:4px; flex-wrap:wrap; }
+.ping-btn { font-size:11px; padding:3px 10px; background:#fff; border:0.5px solid rgba(0,0,0,0.2); border-radius:5px; cursor:pointer; color:#1d4ed8; }
+.ping-btn:hover { background:#eff6ff; }
+.ping-btn.sent { color:#888; border-color:#e5e7eb; cursor:default; }
+.tab-row { display:flex; gap:0; border-bottom:0.5px solid rgba(0,0,0,0.1); margin-bottom:16px; }
+.tab { padding:8px 16px; font-size:13px; cursor:pointer; color:#888; border-bottom:2px solid transparent; margin-bottom:-0.5px; }
+.tab.active { color:#1d4ed8; border-bottom-color:#1d4ed8; font-weight:500; }
+.ia-table th { background:#fafafa; }
+.ia-input { width:48px; padding:3px 6px; border:0.5px solid rgba(0,0,0,0.2); border-radius:4px; font-size:12px; text-align:center; }
+.notice-row { display:flex; align-items:flex-start; gap:10px; padding:10px 14px; border-bottom:0.5px solid rgba(0,0,0,0.06); }
+.notice-row:last-child { border-bottom:none; }
+.notice-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+.notice-text { font-size:13px; line-height:1.4; flex:1; }
+.notice-time { font-size:11px; color:#aaa; white-space:nowrap; }
 </style>
 </head>
 <body>
@@ -127,12 +184,17 @@ tr:hover td { background: #fafaf8; }
   <div class="sidebar-header">
     <div class="brand">
       <div class="brand-icon"><i class="ti ti-school"></i></div>
-      <div><div class="brand-name">Accredify</div><div class="brand-sub">RMK College of Engineering &amp; Technology</div></div>
+      <div><div class="brand-name">Accredify</div><div class="brand-sub">SSN College of Engineering</div></div>
     </div>
   </div>
   <nav class="nav">
     <div class="nav-section">Overview</div>
     <div class="nav-item active" onclick="showPage('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
+    <div class="nav-section">Daily Work</div>
+    <div class="nav-item" onclick="showPage('attendance',this)"><i class="ti ti-clipboard-check"></i> Mark attendance <span class="nav-badge nb-amber">Today</span></div>
+    <div class="nav-item" onclick="showPage('lessonplan',this)"><i class="ti ti-writing"></i> Lesson plan log</div>
+    <div class="nav-item" onclick="showPage('iassess',this)"><i class="ti ti-pencil"></i> Internal marks</div>
+    <div class="nav-item" onclick="showPage('hodfeed',this)"><i class="ti ti-bell"></i> HOD feed <span class="nav-badge nb-red">3</span></div>
     <div class="nav-section">Inspection Bodies</div>
     <div class="nav-item" onclick="showPage('inspect',this)"><i class="ti ti-certificate"></i> Inspection readiness <span class="nav-badge nb-red">4</span></div>
     <div class="nav-section">Records</div>
@@ -726,6 +788,381 @@ tr:hover td { background: #fafaf8; }
     </div>
   </div>
 
+
+  <!-- ATTENDANCE -->
+  <div class="page" id="page-attendance">
+    <div class="day-grid">
+      <div class="day-card"><div class="day-card-title">Today's classes</div><div class="day-card-val">6</div><div class="day-card-sub">3 marked · 3 pending</div></div>
+      <div class="day-card"><div class="day-card-title">Dept avg attendance</div><div class="day-card-val c-amber">76%</div><div class="day-card-sub">Below 80% — needs attention</div></div>
+      <div class="day-card"><div class="day-card-title">Students at risk</div><div class="day-card-val c-red">18</div><div class="day-card-sub">Below 75% this semester</div></div>
+    </div>
+
+    <div class="alert alert-blue"><i class="ti ti-info-circle"></i><div>Click a student dot to toggle Present / Absent. Attendance auto-saves and updates the Anna University readiness tracker.</div></div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-header">
+        <div class="card-title">Monday 15 Jun 2026 — CSE Dept</div>
+        <select class="form-input" style="font-size:12px;padding:4px 8px;">
+          <option>CSE Department</option><option>ECE Department</option><option>Mech Department</option>
+        </select>
+      </div>
+
+      <!-- Class 1 — already marked -->
+      <div class="att-class-row">
+        <div style="flex-shrink:0;width:130px;">
+          <div class="att-class-name">CS3401 — Algorithms</div>
+          <div class="att-class-sub">9:00–10:00 AM · Dr. Kavitha</div>
+        </div>
+        <div class="att-dots" id="att1">
+          <!-- JS will render dots -->
+        </div>
+        <div class="att-pct" id="pct1">92%</div>
+        <span class="badge bg">Marked</span>
+      </div>
+
+      <!-- Class 2 — pending -->
+      <div class="att-class-row">
+        <div style="flex-shrink:0;width:130px;">
+          <div class="att-class-name">CS3402 — OS Concepts</div>
+          <div class="att-class-sub">10:00–11:00 AM · Ms. Deepa</div>
+        </div>
+        <div class="att-dots" id="att2"></div>
+        <div class="att-pct" id="pct2">—</div>
+        <button class="btn btn-primary att-save" onclick="saveAtt(2)">Save</button>
+      </div>
+
+      <!-- Class 3 — pending -->
+      <div class="att-class-row">
+        <div style="flex-shrink:0;width:130px;">
+          <div class="att-class-name">CS3403 — Networks</div>
+          <div class="att-class-sub">11:00–12:00 PM · Mr. Arun</div>
+        </div>
+        <div class="att-dots" id="att3"></div>
+        <div class="att-pct" id="pct3">—</div>
+        <button class="btn btn-primary att-save" onclick="saveAtt(3)">Save</button>
+      </div>
+
+      <div class="att-class-row" style="background:#fafafa;">
+        <div style="flex-shrink:0;width:130px;">
+          <div class="att-class-name" style="color:#888;">CS3404 — DBMS</div>
+          <div class="att-class-sub">2:00–3:00 PM · Mr. Vijay</div>
+        </div>
+        <div style="font-size:12px;color:#aaa;flex:1;">Afternoon — not yet started</div>
+        <span class="badge bgr">Upcoming</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-title">Students below 75% — needs parent notification</div></div>
+      <table>
+        <thead><tr><th>Roll No.</th><th>Name</th><th>Attendance %</th><th>Classes missed</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>20CS001</td><td><strong>Arjun K.</strong></td><td><span class="c-red">68%</span></td><td>16 of 50</td><td><button class="btn btn-sm" onclick="alert('Notification sent to parent.')">Notify parent</button></td></tr>
+          <tr><td>20CS018</td><td><strong>Preethi S.</strong></td><td><span class="c-red">71%</span></td><td>14 of 50</td><td><button class="btn btn-sm" onclick="alert('Notification sent to parent.')">Notify parent</button></td></tr>
+          <tr><td>20CS034</td><td><strong>Karthik R.</strong></td><td><span class="c-amber">74%</span></td><td>13 of 50</td><td><button class="btn btn-sm" onclick="alert('Notification sent to parent.')">Notify parent</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- LESSON PLAN LOG -->
+  <div class="page" id="page-lessonplan">
+    <div class="day-grid">
+      <div class="day-card"><div class="day-card-title">Syllabus on track</div><div class="day-card-val c-green">6</div><div class="day-card-sub">subjects at or ahead of plan</div></div>
+      <div class="day-card"><div class="day-card-title">Behind schedule</div><div class="day-card-val c-red">3</div><div class="day-card-sub">More than 1 unit behind</div></div>
+      <div class="day-card"><div class="day-card-title">This week</div><div class="day-card-val">Week 11</div><div class="day-card-sub">of 16 · Sem 4</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">CSE — Semester 4 syllabus tracker</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span style="font-size:11px;color:#888;">Each block = 1 unit</span>
+          <select class="form-input" style="font-size:12px;padding:4px 8px;"><option>CSE — Sem 4</option><option>ECE — Sem 4</option><option>Mech — Sem 4</option></select>
+        </div>
+      </div>
+      <div style="padding:4px 0;">
+
+        <div class="lp-row">
+          <div style="flex:1;">
+            <div class="lp-subject">CS3401 — Algorithms</div>
+            <div class="lp-staff">Dr. S. Kavitha · Target: Unit 4 by Week 11</div>
+          </div>
+          <div class="lp-units">
+            <div class="lp-unit lu-done" title="Unit 1 — Done">1</div>
+            <div class="lp-unit lu-done" title="Unit 2 — Done">2</div>
+            <div class="lp-unit lu-done" title="Unit 3 — Done">3</div>
+            <div class="lp-unit lu-cur" title="Unit 4 — In progress">4</div>
+            <div class="lp-unit lu-todo" title="Unit 5 — Pending">5</div>
+          </div>
+          <span class="badge bg" style="margin-left:10px;">On track</span>
+        </div>
+
+        <div class="lp-row">
+          <div style="flex:1;">
+            <div class="lp-subject">CS3402 — OS Concepts</div>
+            <div class="lp-staff">Ms. Deepa · Target: Unit 4 by Week 11</div>
+          </div>
+          <div class="lp-units">
+            <div class="lp-unit lu-done">1</div>
+            <div class="lp-unit lu-done">2</div>
+            <div class="lp-unit lu-done">3</div>
+            <div class="lp-unit lu-done">4</div>
+            <div class="lp-unit lu-cur">5</div>
+          </div>
+          <span class="badge bg" style="margin-left:10px;">Ahead</span>
+        </div>
+
+        <div class="lp-row">
+          <div style="flex:1;">
+            <div class="lp-subject">CS3403 — Computer Networks</div>
+            <div class="lp-staff">Mr. Arun · Target: Unit 4 by Week 11</div>
+          </div>
+          <div class="lp-units">
+            <div class="lp-unit lu-done">1</div>
+            <div class="lp-unit lu-done">2</div>
+            <div class="lp-unit lu-cur">3</div>
+            <div class="lp-unit lu-todo">4</div>
+            <div class="lp-unit lu-todo">5</div>
+          </div>
+          <span class="badge ba" style="margin-left:10px;">1 unit behind</span>
+        </div>
+
+        <div class="lp-row" style="background:#fff1f2;">
+          <div style="flex:1;">
+            <div class="lp-subject">CS3404 — Database Systems</div>
+            <div class="lp-staff">Mr. Vijay · Target: Unit 4 by Week 11</div>
+          </div>
+          <div class="lp-units">
+            <div class="lp-unit lu-done">1</div>
+            <div class="lp-unit lu-cur">2</div>
+            <div class="lp-unit lu-todo">3</div>
+            <div class="lp-unit lu-todo">4</div>
+            <div class="lp-unit lu-todo">5</div>
+          </div>
+          <span class="badge br" style="margin-left:10px;">2 units behind</span>
+        </div>
+
+        <div class="lp-row">
+          <div style="flex:1;">
+            <div class="lp-subject">CS3405 — Software Engineering</div>
+            <div class="lp-staff">Dr. Kavitha · Target: Unit 3 by Week 11</div>
+          </div>
+          <div class="lp-units">
+            <div class="lp-unit lu-done">1</div>
+            <div class="lp-unit lu-done">2</div>
+            <div class="lp-unit lu-done">3</div>
+            <div class="lp-unit lu-cur">4</div>
+            <div class="lp-unit lu-todo">5</div>
+          </div>
+          <span class="badge bg" style="margin-left:10px;">On track</span>
+        </div>
+
+      </div>
+      <div style="padding:12px 16px;border-top:0.5px solid rgba(0,0,0,0.08);display:flex;gap:10px;align-items:center;">
+        <i class="ti ti-info-circle" style="color:#888;"></i>
+        <span style="font-size:12px;color:#888;">Behind schedule subjects auto-flag in Anna University and NBA readiness trackers. HOD sees this in the HOD feed.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERNAL ASSESSMENT -->
+  <div class="page" id="page-iassess">
+    <div class="day-grid">
+      <div class="day-card"><div class="day-card-title">IA1 status</div><div class="day-card-val c-green">Done</div><div class="day-card-sub">All 42 subjects entered</div></div>
+      <div class="day-card"><div class="day-card-title">IA2 status</div><div class="day-card-val c-amber">Partial</div><div class="day-card-sub">38 of 42 subjects entered</div></div>
+      <div class="day-card"><div class="day-card-title">Below pass mark</div><div class="day-card-val c-red">34</div><div class="day-card-sub">Students in IA2 so far</div></div>
+    </div>
+
+    <div class="tab-row">
+      <div class="tab active" onclick="switchTab('ia1',this)">IA1 — Completed</div>
+      <div class="tab" onclick="switchTab('ia2',this)">IA2 — In progress</div>
+      <div class="tab" onclick="switchTab('co',this)">CO attainment</div>
+    </div>
+
+    <div id="tab-ia1">
+      <div class="card">
+        <div class="card-header"><div class="card-title">IA1 marks — CSE Sem 4</div><div style="font-size:12px;color:#888;">Max: 50 marks · Pass: 25</div></div>
+        <table class="ia-table">
+          <thead><tr><th>Roll No.</th><th>Name</th><th>CS3401</th><th>CS3402</th><th>CS3403</th><th>CS3404</th><th>CS3405</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>20CS001</td><td><strong>Arjun K.</strong></td><td>38</td><td>42</td><td>31</td><td>28</td><td>44</td><td><span class="badge bg">Pass</span></td></tr>
+            <tr><td>20CS002</td><td><strong>Bhavya M.</strong></td><td>44</td><td>46</td><td>39</td><td>41</td><td>48</td><td><span class="badge bg">Pass</span></td></tr>
+            <tr><td>20CS003</td><td><strong>Dinesh P.</strong></td><td>22</td><td>18</td><td>31</td><td>24</td><td>29</td><td><span class="badge br">Fail</span></td></tr>
+            <tr><td>20CS004</td><td><strong>Esha R.</strong></td><td>41</td><td>38</td><td>44</td><td>36</td><td>42</td><td><span class="badge bg">Pass</span></td></tr>
+            <tr><td>20CS005</td><td><strong>Faizal A.</strong></td><td>19</td><td>26</td><td>22</td><td>31</td><td>24</td><td><span class="badge br">Fail</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="tab-ia2" style="display:none;">
+      <div class="alert alert-amber"><i class="ti ti-alert-triangle"></i><div>4 subjects still pending IA2 entry. These are flagged in NAAC C5 and Anna University academic records.</div></div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Enter IA2 marks — CS3404 Database Systems</div><div style="font-size:12px;color:#888;">Max: 50 · Mr. Vijay</div></div>
+        <table class="ia-table">
+          <thead><tr><th>Roll No.</th><th>Name</th><th>IA2 Marks</th><th>IA1 Marks</th><th>Trend</th></tr></thead>
+          <tbody>
+            <tr><td>20CS001</td><td><strong>Arjun K.</strong></td><td><input class="ia-input" type="number" min="0" max="50" placeholder="—" onchange="updateTrend(this)"></td><td>28</td><td id="trend1" style="color:#888;font-size:12px;">—</td></tr>
+            <tr><td>20CS002</td><td><strong>Bhavya M.</strong></td><td><input class="ia-input" type="number" min="0" max="50" placeholder="—" onchange="updateTrend(this)"></td><td>41</td><td id="trend2" style="color:#888;font-size:12px;">—</td></tr>
+            <tr><td>20CS003</td><td><strong>Dinesh P.</strong></td><td><input class="ia-input" type="number" min="0" max="50" placeholder="—" onchange="updateTrend(this)"></td><td>24</td><td id="trend3" style="color:#888;font-size:12px;">—</td></tr>
+            <tr><td>20CS004</td><td><strong>Esha R.</strong></td><td><input class="ia-input" type="number" min="0" max="50" placeholder="—" onchange="updateTrend(this)"></td><td>36</td><td id="trend4" style="color:#888;font-size:12px;">—</td></tr>
+          </tbody>
+        </table>
+        <div style="padding:12px 16px;border-top:0.5px solid rgba(0,0,0,0.08);display:flex;justify-content:flex-end;gap:8px;">
+          <button class="btn" onclick="alert('Draft saved.')">Save draft</button>
+          <button class="btn btn-primary" onclick="alert('Marks submitted! CO attainment will auto-calculate for CS3404.')">Submit &amp; calculate CO attainment</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-co" style="display:none;">
+      <div class="alert alert-blue"><i class="ti ti-info-circle"></i><div>CO attainment auto-calculates once both IA marks and end-semester results are entered. Target: ≥60% students achieving ≥60% in each CO.</div></div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">CO attainment — CS3401 Algorithms (auto-calculated)</div></div>
+        <table>
+          <thead><tr><th>Course Outcome</th><th>Target %</th><th>Direct attainment</th><th>Indirect (survey)</th><th>Overall</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>CO1 — Analyse algorithm complexity</td><td>60%</td><td>74%</td><td>68%</td><td><strong>72%</strong></td><td><span class="badge bg">Achieved</span></td></tr>
+            <tr><td>CO2 — Apply divide and conquer</td><td>60%</td><td>61%</td><td>65%</td><td><strong>62%</strong></td><td><span class="badge bg">Achieved</span></td></tr>
+            <tr><td>CO3 — Design greedy algorithms</td><td>60%</td><td>52%</td><td>58%</td><td><strong>54%</strong></td><td><span class="badge br">Not achieved</span></td></tr>
+            <tr><td>CO4 — Implement graph algorithms</td><td>60%</td><td>68%</td><td>71%</td><td><strong>69%</strong></td><td><span class="badge bg">Achieved</span></td></tr>
+            <tr><td>CO5 — Compare NP problems</td><td>60%</td><td>44%</td><td>49%</td><td><strong>46%</strong></td><td><span class="badge br">Not achieved</span></td></tr>
+          </tbody>
+        </table>
+        <div style="padding:12px 16px;border-top:0.5px solid rgba(0,0,0,0.08);background:#fff1f2;">
+          <div style="font-size:12px;color:#991b1b;font-weight:500;margin-bottom:4px;"><i class="ti ti-alert-circle"></i> CO3 and CO5 not achieved — NBA C3 requires corrective action to be documented</div>
+          <div style="font-size:12px;color:#64748b;">Suggested action: Add extra tutorial sessions on greedy algorithms and NP completeness in Sem 5. Document this as corrective action for NBA SAR 2025.</div>
+          <button class="btn btn-sm" style="margin-top:8px;" onclick="alert('Corrective action logged and linked to NBA C3 — Continuous Improvement tracker.')">Log corrective action for NBA</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOD FEED -->
+  <div class="page" id="page-hodfeed">
+    <div class="day-grid">
+      <div class="day-card"><div class="day-card-title">Pending from faculty</div><div class="day-card-val c-red">7</div><div class="day-card-sub">items need action today</div></div>
+      <div class="day-card"><div class="day-card-title">Reminders sent today</div><div class="day-card-val">4</div><div class="day-card-sub">Auto-sent by Accredify</div></div>
+      <div class="day-card"><div class="day-card-title">Resolved this week</div><div class="day-card-val c-green">11</div><div class="day-card-sub">items closed by faculty</div></div>
+    </div>
+
+    <div class="two-col">
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-header">
+          <div class="card-title">Faculty pending actions</div>
+          <button class="btn btn-sm btn-primary" onclick="pingAll()"><i class="ti ti-bell"></i> Ping all</button>
+        </div>
+        <div id="pend-list">
+          <div class="pend-row">
+            <div style="flex:1;">
+              <div class="pend-name"><strong>Mr. Ramesh Kumar</strong></div>
+              <div class="pend-dept">Mech Dept · Asst. Professor</div>
+              <div class="pend-tags" style="margin-top:4px;">
+                <span class="badge br">PG cert missing</span>
+                <span class="badge ba">FDP: 24 hrs</span>
+              </div>
+            </div>
+            <button class="ping-btn" id="ping-1" onclick="pingFaculty(1,'Ramesh Kumar')">Ping</button>
+          </div>
+          <div class="pend-row">
+            <div style="flex:1;">
+              <div class="pend-name"><strong>Ms. Priya S.</strong></div>
+              <div class="pend-dept">EEE Dept · Asst. Professor</div>
+              <div class="pend-tags" style="margin-top:4px;">
+                <span class="badge br">PG cert missing</span>
+                <span class="badge ba">FDP: 18 hrs</span>
+              </div>
+            </div>
+            <button class="ping-btn" id="ping-2" onclick="pingFaculty(2,'Priya S.')">Ping</button>
+          </div>
+          <div class="pend-row">
+            <div style="flex:1;">
+              <div class="pend-name"><strong>Mr. Vijay R.</strong></div>
+              <div class="pend-dept">CSE Dept · Asst. Professor</div>
+              <div class="pend-tags" style="margin-top:4px;">
+                <span class="badge br">Lesson plan missing</span>
+                <span class="badge br">IA2 not entered</span>
+              </div>
+            </div>
+            <button class="ping-btn" id="ping-3" onclick="pingFaculty(3,'Vijay R.')">Ping</button>
+          </div>
+          <div class="pend-row">
+            <div style="flex:1;">
+              <div class="pend-name"><strong>Mr. J. Suresh</strong></div>
+              <div class="pend-dept">ECE Dept · Asst. Professor</div>
+              <div class="pend-tags" style="margin-top:4px;">
+                <span class="badge ba">Experience cert pending</span>
+                <span class="badge ba">FDP: 36 hrs</span>
+              </div>
+            </div>
+            <button class="ping-btn" id="ping-4" onclick="pingFaculty(4,'J. Suresh')">Ping</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-header"><div class="card-title">Live department feed</div></div>
+        <div class="update-feed">
+          <div class="feed-item">
+            <div class="feed-avatar" style="background:#16a34a;">SK</div>
+            <div class="feed-content">
+              <div class="feed-name">Dr. S. Kavitha</div>
+              <div class="feed-action">Marked attendance for CS3401 · 92% present</div>
+              <div class="feed-time">Today, 9:08 AM</div>
+            </div>
+            <span class="badge bg feed-badge">Done</span>
+          </div>
+          <div class="feed-item">
+            <div class="feed-avatar" style="background:#1d4ed8;">MA</div>
+            <div class="feed-content">
+              <div class="feed-name">Mr. K. Arun</div>
+              <div class="feed-action">Updated syllabus — CS3403 Unit 3 in progress</div>
+              <div class="feed-time">Today, 8:45 AM</div>
+            </div>
+            <span class="badge bb feed-badge">Update</span>
+          </div>
+          <div class="feed-item">
+            <div class="feed-avatar" style="background:#f59e0b;">PM</div>
+            <div class="feed-content">
+              <div class="feed-name">Dr. P. Meenakshi</div>
+              <div class="feed-action">FDP certificate uploaded — 45 hrs logged</div>
+              <div class="feed-time">Yesterday, 4:32 PM</div>
+            </div>
+            <span class="badge bg feed-badge">Done</span>
+          </div>
+          <div class="feed-item">
+            <div class="feed-avatar" style="background:#dc2626;">VR</div>
+            <div class="feed-content">
+              <div class="feed-name">Mr. Vijay R.</div>
+              <div class="feed-action">Lesson plan for CS3404 still not uploaded</div>
+              <div class="feed-time">Auto-flagged · 3 days overdue</div>
+            </div>
+            <span class="badge br feed-badge">Overdue</span>
+          </div>
+          <div class="feed-item">
+            <div class="feed-avatar" style="background:#6366f1;">RS</div>
+            <div class="feed-content">
+              <div class="feed-name">Dr. R. Selvam</div>
+              <div class="feed-action">Submitted Scopus paper link — ECE publications updated</div>
+              <div class="feed-time">Yesterday, 11:20 AM</div>
+            </div>
+            <span class="badge" style="background:#ede9fe;color:#5b21b6;">Research</span>
+          </div>
+          <div class="feed-item">
+            <div class="feed-avatar" style="background:#0369a1;">JS</div>
+            <div class="feed-content">
+              <div class="feed-name">Mr. J. Suresh</div>
+              <div class="feed-action">Accredify reminder sent — experience cert still pending</div>
+              <div class="feed-time">Auto-reminder · 9:00 AM today</div>
+            </div>
+            <span class="badge ba">Reminded</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- FACULTY -->
   <div class="page" id="page-faculty">
     <div class="stats-grid">
@@ -896,7 +1333,7 @@ function showPage(id, el) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('page-' + id).classList.add('active');
   if (el) el.classList.add('active');
-  const titles = { dashboard:'Dashboard', inspect:'Inspection Readiness', faculty:'Faculty Records', syllabus:'Syllabus Tracking', students:'Student Records', infra:'Infrastructure', reports:'Generate Reports', vault:'Document Vault' };
+  const titles = { dashboard:'Dashboard', inspect:'Inspection Readiness', faculty:'Faculty Records', syllabus:'Syllabus Tracking', students:'Student Records', infra:'Infrastructure', reports:'Generate Reports', vault:'Document Vault', attendance:'Mark Attendance', lessonplan:'Lesson Plan Log', iassess:'Internal Assessment Marks', hodfeed:'HOD Feed' };
   document.getElementById('topbar-title').textContent = titles[id] || id;
 }
 function selectBody(body) {
@@ -907,6 +1344,80 @@ function selectBody(body) {
   document.getElementById('bc-'+body).classList.add('selected');
   document.getElementById('panel-'+body).classList.add('active');
 }
+function switchTab(tab, el) {
+  ['ia1','ia2','co'].forEach(t => {
+    var el2 = document.getElementById('tab-'+t);
+    if(el2) el2.style.display = 'none';
+  });
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  var show = document.getElementById('tab-'+tab);
+  if(show) show.style.display = 'block';
+  if(el) el.classList.add('active');
+}
+
+function pingFaculty(n, name) {
+  var btn = document.getElementById('ping-'+n);
+  if(!btn || btn.classList.contains('sent')) return;
+  btn.textContent = 'Sent ✓';
+  btn.classList.add('sent');
+  btn.disabled = true;
+}
+
+function pingAll() {
+  [1,2,3,4].forEach(n => {
+    var btn = document.getElementById('ping-'+n);
+    if(btn && !btn.classList.contains('sent')) {
+      btn.textContent = 'Sent ✓';
+      btn.classList.add('sent');
+      btn.disabled = true;
+    }
+  });
+}
+
+function saveAtt(n) {
+  var dots = document.querySelectorAll('#att'+n+' .att-dot');
+  var present = 0;
+  dots.forEach(d => { if(d.classList.contains('att-p')) present++; });
+  var pct = dots.length ? Math.round(present/dots.length*100) : 0;
+  document.getElementById('pct'+n).textContent = pct+'%';
+  document.getElementById('pct'+n).style.color = pct < 75 ? '#b91c1c' : '#15803d';
+  var btn = document.querySelector('#att'+n).parentElement.querySelector('.att-save');
+  if(btn) { btn.textContent = 'Saved ✓'; btn.disabled = true; btn.style.opacity='0.5'; }
+}
+
+function updateTrend(input) {
+  var row = input.closest('tr');
+  var ia1 = parseInt(row.cells[3].textContent) || 0;
+  var ia2 = parseInt(input.value) || 0;
+  var idx = Array.from(row.parentElement.children).indexOf(row) + 1;
+  var td = document.getElementById('trend'+idx);
+  if(!td) return;
+  if(ia2 > ia1) { td.textContent = '▲ Improved'; td.style.color = '#16a34a'; }
+  else if(ia2 < ia1) { td.textContent = '▼ Dropped'; td.style.color = '#dc2626'; }
+  else { td.textContent = '→ Same'; td.style.color = '#888'; }
+}
+
+// Build attendance dots
+function buildAttDots(id, total, presentCount, interactive) {
+  var container = document.getElementById(id);
+  if(!container) return;
+  for(var i=0;i<total;i++){
+    var d = document.createElement('div');
+    d.className = 'att-dot ' + (i < presentCount ? 'att-p' : 'att-a');
+    d.textContent = (i+1);
+    if(interactive) {
+      d.onclick = (function(el){return function(){
+        if(el.classList.contains('att-p')){ el.classList.remove('att-p'); el.classList.add('att-a'); }
+        else { el.classList.remove('att-a'); el.classList.add('att-p'); }
+      }})(d);
+    }
+    container.appendChild(d);
+  }
+}
+buildAttDots('att1', 12, 11, false);
+buildAttDots('att2', 12, 9, true);
+buildAttDots('att3', 12, 10, true);
+
 function toggleCriterion(header) {
   const body = header.nextElementSibling;
   const icon = header.querySelector('i.ti-chevron-down, i.ti-chevron-up');
